@@ -1,0 +1,161 @@
+{
+  "$name": "Enspire Default",
+  "$description": "Default theme: brand palettes + personality knobs. This file IS the primitive layer — raw hex is legal here and ONLY here. To make a new project theme, copy this file and change the values. Never change the key names.",
+  "$convention": "Plain stops (50-900) are light-mode values; d-prefixed stops (d100-d900) are dark-mode-specific values. Lower number = lighter. A value used by both modes needs no d-stop.",
+
+  "personality": {
+    "density": {
+      "$type": "number",
+      "$value": 1,
+      "$description": "Multiplies every space.* token. compact: 0.75 · default: 1 · comfortable: 1.25"
+    },
+    "radiusScale": {
+      "$type": "number",
+      "$value": 1,
+      "$description": "Multiplies every radius.* token except full. sharp: 0 · soft: 1 · round: 2"
+    }
+  },
+
+  "palette": {
+    "naviblue": {
+      "$description": "Primary brand ramp.",
+      "50":   { "$type": "color", "$value": "#EBF0FA" },
+      "100":  { "$type": "color", "$value": "#D4E0F5" },
+      "200":  { "$type": "color", "$value": "#A8C0EB" },
+      "300":  { "$type": "color", "$value": "#7A9FDB" },
+      "400":  { "$type": "color", "$value": "#4D7EC9" },
+      "500":  { "$type": "color", "$value": "#2B5BA8" },
+      "600":  { "$type": "color", "$value": "#1C3D6E" },
+      "700":  { "$type": "color", "$value": "#163261" },
+      "800":  { "$type": "color", "$value": "#102754" },
+      "900":  { "$type": "color", "$value": "#0A1C3D" },
+      "d100": { "$type": "color", "$value": "#B8D0F5" },
+      "d200": { "$type": "color", "$value": "#93B8F0" },
+      "d300": { "$type": "color", "$value": "#7AA8E8" },
+      "d400": { "$type": "color", "$value": "#5A8FE0" },
+      "d500": { "$type": "color", "$value": "#4A7FD4" },
+      "d600": { "$type": "color", "$value": "#3A6FC4" },
+      "d800": { "$type": "color", "$value": "#162D58" },
+      "d900": { "$type": "color", "$value": "#0D1E3D" }
+    },
+
+    "verdant": {
+      "$description": "Secondary brand ramp (teal-emerald).",
+      "50":   { "$type": "color", "$value": "#E3F6F1" },
+      "100":  { "$type": "color", "$value": "#C1EDE3" },
+      "200":  { "$type": "color", "$value": "#83DBC7" },
+      "300":  { "$type": "color", "$value": "#44C8AB" },
+      "400":  { "$type": "color", "$value": "#27B38E" },
+      "500":  { "$type": "color", "$value": "#1E8A6E" },
+      "600":  { "$type": "color", "$value": "#196A55" },
+      "700":  { "$type": "color", "$value": "#145040" },
+      "800":  { "$type": "color", "$value": "#0F382D" },
+      "900":  { "$type": "color", "$value": "#0A2220" },
+      "d200": { "$type": "color", "$value": "#7DE0C4" },
+      "d300": { "$type": "color", "$value": "#33C9A2" },
+      "d500": { "$type": "color", "$value": "#1E9678" },
+      "d900": { "$type": "color", "$value": "#0F3028" }
+    },
+
+    "green": {
+      "$description": "Success. Deliberately brighter and more yellow than verdant, so positive feedback is never confused with the secondary brand color.",
+      "50":  { "$type": "color", "$value": "#DCFCE7" },
+      "100": { "$type": "color", "$value": "#BBF7D0" },
+      "200": { "$type": "color", "$value": "#86EFAC" },
+      "300": { "$type": "color", "$value": "#34D468" },
+      "400": { "$type": "color", "$value": "#22C55E" },
+      "500": { "$type": "color", "$value": "#16A34A" },
+      "600": { "$type": "color", "$value": "#15803D" },
+      "700": { "$type": "color", "$value": "#166534" },
+      "800": { "$type": "color", "$value": "#14532D" },
+      "900": { "$type": "color", "$value": "#052E16" }
+    },
+
+    "amber": {
+      "$description": "Warning.",
+      "50":  { "$type": "color", "$value": "#FEF3C7" },
+      "100": { "$type": "color", "$value": "#FDE68A" },
+      "200": { "$type": "color", "$value": "#FCD34D" },
+      "300": { "$type": "color", "$value": "#FBB034" },
+      "400": { "$type": "color", "$value": "#F59E0B" },
+      "500": { "$type": "color", "$value": "#D97706" },
+      "600": { "$type": "color", "$value": "#B45309" },
+      "700": { "$type": "color", "$value": "#92400E" },
+      "800": { "$type": "color", "$value": "#78350F" },
+      "900": { "$type": "color", "$value": "#451A03" }
+    },
+
+    "red": {
+      "$description": "Error.",
+      "50":  { "$type": "color", "$value": "#FEE2E2" },
+      "100": { "$type": "color", "$value": "#FECACA" },
+      "200": { "$type": "color", "$value": "#FCA5A5" },
+      "300": { "$type": "color", "$value": "#F87171" },
+      "400": { "$type": "color", "$value": "#EF4444" },
+      "500": { "$type": "color", "$value": "#DC2626" },
+      "600": { "$type": "color", "$value": "#B91C1C" },
+      "700": { "$type": "color", "$value": "#991B1B" },
+      "800": { "$type": "color", "$value": "#7F1D1D" },
+      "900": { "$type": "color", "$value": "#450A0A" }
+    },
+
+    "slate": {
+      "$description": "Neutral UI ramp.",
+      "50":  { "$type": "color", "$value": "#F1F5F9" },
+      "100": { "$type": "color", "$value": "#E2E8F0" },
+      "200": { "$type": "color", "$value": "#CBD5E1" },
+      "300": { "$type": "color", "$value": "#94A3B8" },
+      "500": { "$type": "color", "$value": "#64748B" },
+      "600": { "$type": "color", "$value": "#475569" },
+      "700": { "$type": "color", "$value": "#334155" },
+      "800": { "$type": "color", "$value": "#1E293B" },
+      "900": { "$type": "color", "$value": "#0F172A" }
+    },
+
+    "canvas": {
+      "$description": "Page and surface backgrounds. 0 = white, 950 = darkest.",
+      "0":   { "$type": "color", "$value": "#FFFFFF" },
+      "50":  { "$type": "color", "$value": "#F4F6F9" },
+      "100": { "$type": "color", "$value": "#EEF1F6" },
+      "200": { "$type": "color", "$value": "#E4E9F2" },
+      "800": { "$type": "color", "$value": "#1C2D40" },
+      "850": { "$type": "color", "$value": "#162436" },
+      "900": { "$type": "color", "$value": "#0F1B2D" },
+      "950": { "$type": "color", "$value": "#0A1220" }
+    },
+
+    "ink": {
+      "$description": "Text colors. Plain stops for light mode, d-stops for dark.",
+      "0":    { "$type": "color", "$value": "#FFFFFF" },
+      "100":  { "$type": "color", "$value": "#B4C0CC" },
+      "200":  { "$type": "color", "$value": "#8799AE" },
+      "300":  { "$type": "color", "$value": "#546880" },
+      "900":  { "$type": "color", "$value": "#0E1C2F" },
+      "d50":  { "$type": "color", "$value": "#E8EDF5" },
+      "d200": { "$type": "color", "$value": "#8099B8" },
+      "d300": { "$type": "color", "$value": "#566880" },
+      "d400": { "$type": "color", "$value": "#3A4A5C" }
+    },
+
+    "violet": {
+      "$description": "Visited links only.",
+      "500":  { "$type": "color", "$value": "#5E3FA3" },
+      "d300": { "$type": "color", "$value": "#A98ADA" }
+    },
+
+    "alpha": {
+      "$description": "Transparent overlays for interaction states.",
+      "hover":       { "$type": "color", "$value": "#1C3D6E0F" },
+      "active":      { "$type": "color", "$value": "#1C3D6E1F" },
+      "disabled":    { "$type": "color", "$value": "#00000033" },
+      "d-hover":     { "$type": "color", "$value": "#4A7FD41A" },
+      "d-active":    { "$type": "color", "$value": "#4A7FD433" },
+      "d-disabled":  { "$type": "color", "$value": "#FFFFFF1A" }
+    }
+  },
+
+  "font": {
+    "text":    { "$type": "fontFamily", "$value": "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" },
+    "heading": { "$type": "fontFamily", "$value": "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" }
+  }
+}

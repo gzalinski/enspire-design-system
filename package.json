@@ -1,0 +1,12 @@
+{
+  "name": "enspire-design-system",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Token-first, CSS-only design system. Works in WordPress/Gutenberg, React/Next and static HTML.",
+  "scripts": {
+    "build": "node tools/build.js",
+    "check": "node tools/check.js",
+    "verify": "node tools/build.js && node tools/check.js"
+  },
+  "engines": { "node": ">=18" }
+}
