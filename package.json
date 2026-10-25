@@ -6,7 +6,12 @@
   "scripts": {
     "build": "node tools/build.js",
     "check": "node tools/check.js",
-    "verify": "node tools/build.js && node tools/check.js"
+    "verify": "node tools/build.js && node tools/icons.js && node tools/check.js && node tools/index.js && node tools/lab.js",
+    "icons": "node tools/icons.js",
+    "index": "node tools/index.js",
+    "lab": "node tools/lab.js"
   },
-  "engines": { "node": ">=18" }
+  "engines": {
+    "node": ">=18"
+  }
 }

@@ -1,0 +1,60 @@
+{
+  "name": "icon-box",
+  "class": "es-icon-box",
+  "summary": "An Icon inside a styled container (fill, outline, soft or text) with size, radius and tone.",
+  "tags": [
+    "icon",
+    "container",
+    "badge",
+    "decorative",
+    "feature",
+    "avatar-like"
+  ],
+  "uses": [
+    "icon"
+  ],
+  "css": [
+    "icon-box.css"
+  ],
+  "variants": {
+    "style": [
+      "fill",
+      "outline",
+      "soft",
+      "text"
+    ],
+    "size": [
+      "sm",
+      "md",
+      "lg"
+    ],
+    "radius": [
+      "none",
+      "soft",
+      "full"
+    ],
+    "tone": [
+      "primary",
+      "secondary",
+      "neutral",
+      "success",
+      "warning",
+      "error"
+    ]
+  },
+  "defaults": {
+    "style": "fill",
+    "size": "md",
+    "radius": "soft",
+    "tone": "primary"
+  },
+  "context": [
+    "--es-icon-box-size",
+    "--es-icon-box-radius"
+  ],
+  "slots": [
+    "default: one .es-icon"
+  ],
+  "a11y": "Decorative by default; mark the inner icon aria-hidden. If the box alone carries meaning, give the box role=\"img\" and aria-label. Interactive version is IconButton (Faza 3), not this.",
+  "preview": "<span class=\"es-icon-box\" data-style=\"{style}\" data-size=\"{size}\" data-radius=\"{radius}\" data-tone=\"{tone}\"><span class=\"es-icon\" data-name=\"mail\" aria-hidden=\"true\"></span></span>"
+}

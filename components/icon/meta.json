@@ -1,0 +1,74 @@
+{
+  "name": "icon",
+  "class": "es-icon",
+  "summary": "A bare Lucide glyph drawn as a CSS mask. Takes currentColor. No container.",
+  "tags": [
+    "icon",
+    "glyph",
+    "svg",
+    "lucide",
+    "decorative"
+  ],
+  "uses": [],
+  "css": [
+    "icon.css",
+    "glyphs.css"
+  ],
+  "variants": {
+    "size": [
+      "sm",
+      "md",
+      "lg"
+    ],
+    "name": [
+      "arrow-left",
+      "arrow-right",
+      "building-2",
+      "calendar",
+      "check",
+      "chevron-down",
+      "chevron-left",
+      "chevron-right",
+      "chevron-up",
+      "circle-alert",
+      "circle-check",
+      "circle-x",
+      "clock",
+      "download",
+      "external-link",
+      "globe",
+      "heart",
+      "house",
+      "info",
+      "link",
+      "mail",
+      "map-pin",
+      "menu",
+      "message-circle",
+      "minus",
+      "phone",
+      "plus",
+      "quote",
+      "search",
+      "send",
+      "shield-check",
+      "star",
+      "triangle-alert",
+      "upload",
+      "user",
+      "users",
+      "x",
+      "zap"
+    ]
+  },
+  "defaults": {
+    "size": "md",
+    "name": "mail"
+  },
+  "context": [
+    "--es-icon-size"
+  ],
+  "slots": [],
+  "a11y": "Decorative by default: add aria-hidden=\"true\". If it carries meaning on its own, use role=\"img\" and aria-label. Never convey meaning by glyph alone.",
+  "preview": "<span class=\"es-icon\" data-name=\"{name}\" data-size=\"{size}\" aria-hidden=\"true\"></span>"
+}

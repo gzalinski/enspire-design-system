@@ -83,6 +83,14 @@ for (const f of cssFiles) {
   for (const m of fs.readFileSync(f, 'utf8').matchAll(/(--es-[a-z0-9-]+)\s*:/g)) declared.add(m[1]);
 }
 
+// Context hooks a component accepts from its parents are declared in meta.json ("context": [...]).
+// That keeps them greppable and stops a typo'd token from hiding behind a var() fallback.
+for (const f of walkFiles(path.join(ROOT, 'components'), ['meta.json'])) {
+  try {
+    for (const v of JSON.parse(fs.readFileSync(f, 'utf8')).context || []) declared.add(v);
+  } catch (e) { /* reported by rule 4 */ }
+}
+
 /* ---------- rules 1 + 2: raw-values, token-ref ---------- */
 
 const RAW = /(?<![\w#-])(-?\d*\.?\d+)(px|rem|em)\b|#[0-9a-fA-F]{3,8}\b/g;

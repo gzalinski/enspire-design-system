@@ -1,0 +1,50 @@
+{
+  "name": "contact-info",
+  "class": "es-contact-info",
+  "summary": "One contact line: icon container, small label, value (phone, email, address, hours).",
+  "tags": [
+    "contact",
+    "phone",
+    "email",
+    "address",
+    "footer",
+    "header",
+    "info",
+    "list-item"
+  ],
+  "uses": [
+    "icon-box"
+  ],
+  "css": [
+    "contact-info.css"
+  ],
+  "variants": {
+    "layout": [
+      "inline",
+      "stacked"
+    ],
+    "size": [
+      "sm",
+      "md",
+      "lg"
+    ],
+    "icon-radius": [
+      "none",
+      "soft",
+      "full"
+    ]
+  },
+  "defaults": {
+    "layout": "inline",
+    "size": "md",
+    "icon-radius": "soft"
+  },
+  "context": [],
+  "slots": [
+    "icon: one .es-icon-box",
+    "label: .es-contact-info__label",
+    "value: .es-contact-info__value (use <a href=\"tel:\"> / mailto: when actionable)"
+  ],
+  "a11y": "Icon is decorative (aria-hidden); the label and value carry the meaning. Make the value a real link for phone and email.",
+  "preview": "<div class=\"es-contact-info\" data-layout=\"{layout}\" data-size=\"{size}\" data-icon-radius=\"{icon-radius}\"><span class=\"es-icon-box\" data-style=\"soft\"><span class=\"es-icon\" data-name=\"phone\" aria-hidden=\"true\"></span></span><div class=\"es-contact-info__body\"><span class=\"es-contact-info__label\">Call us</span><a class=\"es-contact-info__value\" href=\"tel:+37300000000\">+373 000 00 000</a></div></div>"
+}

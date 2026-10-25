@@ -154,7 +154,8 @@
     }
   },
 
-  "font": {
+  "typeface": {
+    "$description": "Font stacks. Core exposes them as --es-font-text / --es-font-heading.",
     "text":    { "$type": "fontFamily", "$value": "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" },
     "heading": { "$type": "fontFamily", "$value": "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" }
   }

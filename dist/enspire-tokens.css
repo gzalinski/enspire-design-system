@@ -7,32 +7,6 @@
   --es-radius-scale: 1;
 
   --es-space-0: 0px;
-  --es-space-025: calc(2px * var(--es-density));
-  --es-space-050: calc(4px * var(--es-density));
-  --es-space-075: calc(6px * var(--es-density));
-  --es-space-100: calc(8px * var(--es-density));
-  --es-space-150: calc(12px * var(--es-density));
-  --es-space-200: calc(16px * var(--es-density));
-  --es-space-250: calc(20px * var(--es-density));
-  --es-space-300: calc(24px * var(--es-density));
-  --es-space-400: calc(32px * var(--es-density));
-  --es-space-500: calc(40px * var(--es-density));
-  --es-space-600: calc(48px * var(--es-density));
-  --es-space-800: calc(64px * var(--es-density));
-  --es-space-1000: calc(80px * var(--es-density));
-  --es-space-negative-025: calc(-2px * var(--es-density));
-  --es-space-negative-050: calc(-4px * var(--es-density));
-  --es-space-negative-100: calc(-8px * var(--es-density));
-  --es-space-negative-150: calc(-12px * var(--es-density));
-  --es-space-negative-200: calc(-16px * var(--es-density));
-  --es-space-negative-300: calc(-24px * var(--es-density));
-  --es-space-negative-400: calc(-32px * var(--es-density));
-  --es-radius-xsmall: calc(2px * var(--es-radius-scale));
-  --es-radius-small: calc(4px * var(--es-radius-scale));
-  --es-radius-medium: calc(8px * var(--es-radius-scale));
-  --es-radius-large: calc(12px * var(--es-radius-scale));
-  --es-radius-xlarge: calc(16px * var(--es-radius-scale));
-  --es-radius-xxlarge: calc(24px * var(--es-radius-scale));
   --es-radius-full: 9999px;
   --es-border-width-thin: 1px;
   --es-border-width-medium: 2px;
@@ -66,8 +40,8 @@
   --es-heading-tracking-tight: -0.02em;
   --es-heading-tracking-normal: -0.01em;
   --es-heading-tracking-relaxed: 0em;
-  --es-font-text: var(--es-font-text);
-  --es-font-heading: var(--es-font-heading);
+  --es-font-text: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --es-font-heading: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --es-base-bg: #F4F6F9;
   --es-base-surface: #FFFFFF;
   --es-base-surface-hover: #EEF1F6;
@@ -163,6 +137,40 @@
   --es-select-option-text-hover: var(--es-primary-text);
   --es-select-option-bg-selected: var(--es-primary-soft);
   --es-select-option-text-selected: var(--es-primary-text);
+}
+
+/* SCOPE. A custom property's var() is resolved on the element that declares it, so overriding
+   --es-density on an inner element does nothing unless the scaled tokens are re-declared there.
+   Put data-es-scope on any region that sets its own --es-density / --es-radius-scale
+   (e.g. a compact sidebar). Setting the knobs on :root needs no attribute. */
+:root,
+[data-es-scope] {
+  --es-space-025: calc(2px * var(--es-density));
+  --es-space-050: calc(4px * var(--es-density));
+  --es-space-075: calc(6px * var(--es-density));
+  --es-space-100: calc(8px * var(--es-density));
+  --es-space-150: calc(12px * var(--es-density));
+  --es-space-200: calc(16px * var(--es-density));
+  --es-space-250: calc(20px * var(--es-density));
+  --es-space-300: calc(24px * var(--es-density));
+  --es-space-400: calc(32px * var(--es-density));
+  --es-space-500: calc(40px * var(--es-density));
+  --es-space-600: calc(48px * var(--es-density));
+  --es-space-800: calc(64px * var(--es-density));
+  --es-space-1000: calc(80px * var(--es-density));
+  --es-space-negative-025: calc(-2px * var(--es-density));
+  --es-space-negative-050: calc(-4px * var(--es-density));
+  --es-space-negative-100: calc(-8px * var(--es-density));
+  --es-space-negative-150: calc(-12px * var(--es-density));
+  --es-space-negative-200: calc(-16px * var(--es-density));
+  --es-space-negative-300: calc(-24px * var(--es-density));
+  --es-space-negative-400: calc(-32px * var(--es-density));
+  --es-radius-xsmall: calc(2px * var(--es-radius-scale));
+  --es-radius-small: calc(4px * var(--es-radius-scale));
+  --es-radius-medium: calc(8px * var(--es-radius-scale));
+  --es-radius-large: calc(12px * var(--es-radius-scale));
+  --es-radius-xlarge: calc(16px * var(--es-radius-scale));
+  --es-radius-xxlarge: calc(24px * var(--es-radius-scale));
 }
 
 :root[data-theme="dark"] {

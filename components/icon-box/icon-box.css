@@ -1,0 +1,76 @@
+/* IconBox — molecule. An Icon inside a styled container: style × size × radius × tone.
+   The glyph is sized by CONTEXT (--es-icon-size), never by styling .es-icon directly.
+   A parent can set --es-icon-box-size / --es-icon-box-radius to restyle every box inside it
+   (ContactInfo does). An explicit data-size / data-radius on the box wins over that context. */
+
+.es-icon-box {
+  /* tone (default: primary) */
+  --_solid: var(--es-primary-bg);
+  --_on-solid: var(--es-primary-text-inverted);
+  --_soft: var(--es-primary-soft);
+  --_ink: var(--es-primary-text);
+  --_line: var(--es-primary-strong);
+
+  /* style (default: fill) */
+  --_bg: var(--_solid);
+  --_fg: var(--_on-solid);
+  --_bd: transparent;
+
+  /* geometry (default: md, soft) */
+  --_box: var(--es-icon-box-size, var(--es-space-500));
+  --_radius: var(--es-icon-box-radius, var(--es-radius-medium));
+
+  /* hand the glyph size down as context: half the box (32 -> 16, 40 -> 20, 48 -> 24) */
+  --es-icon-size: calc(var(--_box) / 2);
+
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--_box);
+  block-size: var(--_box);
+  border: var(--es-border-width-thin) solid var(--_bd);
+  border-radius: var(--_radius);
+  background-color: var(--_bg);
+  color: var(--_fg);
+}
+
+/* ---- style ---- */
+.es-icon-box[data-style="fill"]    { --_bg: var(--_solid); --_fg: var(--_on-solid); --_bd: transparent; }
+.es-icon-box[data-style="outline"] { --_bg: transparent;   --_fg: var(--_ink);      --_bd: var(--_line); }
+.es-icon-box[data-style="soft"]    { --_bg: var(--_soft);  --_fg: var(--_ink);      --_bd: transparent; }
+.es-icon-box[data-style="text"]    { --_bg: transparent;   --_fg: var(--_ink);      --_bd: transparent; }
+
+/* ---- size ---- */
+.es-icon-box[data-size="sm"] { --_box: var(--es-space-400); }
+.es-icon-box[data-size="md"] { --_box: var(--es-space-500); }
+.es-icon-box[data-size="lg"] { --_box: var(--es-space-600); }
+
+/* ---- radius (3 choices over the 7-step scale) ---- */
+.es-icon-box[data-radius="none"] { --_radius: 0; }
+.es-icon-box[data-radius="soft"] { --_radius: var(--es-radius-medium); }
+.es-icon-box[data-radius="full"] { --_radius: var(--es-radius-full); }
+
+/* ---- tone ---- */
+.es-icon-box[data-tone="secondary"] {
+  --_solid: var(--es-secondary-bg); --_on-solid: var(--es-secondary-text-inverted);
+  --_soft: var(--es-secondary-soft); --_ink: var(--es-secondary-text); --_line: var(--es-secondary-strong);
+}
+.es-icon-box[data-tone="neutral"] {
+  /* soft uses neutral-surface: neutral-soft is nearly white and disappears on base-surface */
+  --_solid: var(--es-neutral-bg); --_on-solid: var(--es-text-inverted);
+  --_soft: var(--es-neutral-surface); --_ink: var(--es-neutral-text); --_line: var(--es-neutral-strong);
+}
+.es-icon-box[data-tone="success"] {
+  --_solid: var(--es-success-bg); --_on-solid: var(--es-success-text-inverted);
+  --_soft: var(--es-success-soft); --_ink: var(--es-success-text); --_line: var(--es-success-strong);
+}
+.es-icon-box[data-tone="warning"] {
+  --_solid: var(--es-warning-bg); --_on-solid: var(--es-warning-text-inverted);
+  --_soft: var(--es-warning-soft); --_ink: var(--es-warning-text); --_line: var(--es-warning-strong);
+}
+.es-icon-box[data-tone="error"] {
+  --_solid: var(--es-error-bg); --_on-solid: var(--es-error-text-inverted);
+  --_soft: var(--es-error-soft); --_ink: var(--es-error-text); --_line: var(--es-error-strong);
+}

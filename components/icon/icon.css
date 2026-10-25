@@ -1,0 +1,26 @@
+/* Icon — atom. A bare glyph; no container, no fill, no radius (that is IconBox).
+   Color comes from `currentColor`. Size: data-size, else a parent's --es-icon-size, else md. */
+
+.es-icon {
+  --_size: var(--es-icon-size, var(--es-space-250));
+
+  display: inline-block;
+  flex: none;
+  inline-size: var(--_size);
+  block-size: var(--_size);
+  vertical-align: middle;
+
+  -webkit-mask-image: var(--_glyph);
+  mask-image: var(--_glyph);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/* An explicit size on the icon beats anything inherited from a parent. */
+.es-icon[data-size="sm"] { --_size: var(--es-space-200); }
+.es-icon[data-size="md"] { --_size: var(--es-space-250); }
+.es-icon[data-size="lg"] { --_size: var(--es-space-300); }

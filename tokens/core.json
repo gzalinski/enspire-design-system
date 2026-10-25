@@ -106,8 +106,8 @@
   },
 
   "font": {
-    "text":    { "$type": "fontFamily", "$value": "{font.text}" },
-    "heading": { "$type": "fontFamily", "$value": "{font.heading}" }
+    "text":    { "$type": "fontFamily", "$value": "{typeface.text}" },
+    "heading": { "$type": "fontFamily", "$value": "{typeface.heading}" }
   },
 
   "semantic": {

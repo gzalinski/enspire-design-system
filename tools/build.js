@@ -137,17 +137,23 @@ function build(themeName) {
 
   const core = readJSON(corePath);
   const theme = readJSON(themePath);
+  // A shallow merge would silently let core overwrite a theme group of the same name
+  // (that is how --es-font-text once became var(--es-font-text)). Make it impossible.
+  const clash = Object.keys(theme).filter((k) => !k.startsWith('$') && k in core);
+  if (clash.length) die(`theme and core both define "${clash.join('", "')}" — rename the theme key.`);
   const tree = { ...theme, ...core };
 
   const light = [];
+  const scoped = []; // tokens computed from a personality knob (see note on SCOPE below)
   const dark = [];
   const flat = {};
   let count = 0;
 
   for (const [trail, token, scale] of walk(core)) {
     const name = cssName(trail);
-    const lightValue = applyScale(resolve(tree, token.$value, 'light'), scale);
-    light.push(`  ${name}: ${lightValue};`);
+    const resolved = resolve(tree, token.$value, 'light');
+    const lightValue = applyScale(resolved, scale);
+    (lightValue !== resolved ? scoped : light).push(`  ${name}: ${lightValue};`);
     flat[name] = { light: lightValue, group: trail[0], path: trail.join('.') };
     count++;
 
@@ -174,6 +180,15 @@ function build(themeName) {
 ${knobs}
 
 ${light.join('\n')}
+}
+
+/* SCOPE. A custom property's var() is resolved on the element that declares it, so overriding
+   --es-density on an inner element does nothing unless the scaled tokens are re-declared there.
+   Put data-es-scope on any region that sets its own --es-density / --es-radius-scale
+   (e.g. a compact sidebar). Setting the knobs on :root needs no attribute. */
+:root,
+[data-es-scope] {
+${scoped.join('\n')}
 }
 
 :root[data-theme="dark"] {

@@ -1,0 +1,105 @@
+/* Enspire Lab chrome. Lives in tools/, so it is not linted — but it still runs on the system's own tokens,
+   which means switching theme / density / radius restyles the Lab itself. */
+
+*, *::before, *::after { box-sizing: border-box; }
+html { color-scheme: light dark; }
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+body {
+  margin: 0;
+  background: var(--es-base-bg);
+  color: var(--es-text-primary);
+  font-family: var(--es-font-text);
+  font-size: var(--es-text-size-md);
+  line-height: var(--es-text-leading-normal);
+}
+
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--es-state-focus); outline-offset: 2px; }
+code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+/* ---------- top bar ---------- */
+.lab-bar {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--es-base-surface);
+  border-bottom: 1px solid var(--es-neutral-strong);
+}
+.lab-bar__inner {
+  max-width: 1240px; margin: 0 auto; padding: 12px 16px;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;
+}
+.lab-brand { font-weight: 700; font-size: 1.125rem; letter-spacing: -0.01em; margin-right: auto; display: flex; align-items: baseline; gap: 8px; }
+.lab-brand small { font-weight: 500; font-size: 0.75rem; color: var(--es-text-tertiary); }
+.lab-ctl { display: flex; align-items: center; gap: 8px; max-width: 100%; min-width: 0; }
+.lab-ctl .lab-seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.lab-ctl > span { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em; color: var(--es-text-tertiary); text-transform: uppercase; }
+
+.lab-seg { display: inline-flex; border: 1px solid var(--es-neutral-strong); border-radius: 8px; overflow: hidden; background: var(--es-base-surface); }
+.lab-seg button {
+  flex: none; white-space: nowrap;
+  border: 0; background: transparent; padding: 6px 12px; cursor: pointer; font-size: 0.8125rem; font-weight: 500;
+  border-right: 1px solid var(--es-neutral-strong);
+}
+.lab-seg button:last-child { border-right: 0; }
+.lab-seg button:hover { background: var(--es-base-surface-hover); }
+.lab-seg button[aria-pressed="true"] { background: var(--es-primary-bg); color: var(--es-primary-text-inverted); }
+
+.lab-input, .lab-select {
+  border: 1px solid var(--es-neutral-strong); border-radius: 8px; background: var(--es-base-surface);
+  padding: 6px 10px; font-size: 0.8125rem;
+}
+.lab-input { min-width: 180px; }
+
+/* ---------- page ---------- */
+.lab-main { max-width: 1240px; margin: 0 auto; padding: 8px 16px 64px; }
+.lab-nav { display: flex; gap: 8px; overflow-x: auto; padding: 16px 0 8px; scrollbar-width: thin; }
+.lab-nav a {
+  flex: none; text-decoration: none; font-size: 0.8125rem; font-weight: 500; color: var(--es-text-secondary);
+  padding: 4px 12px; border-radius: 9999px; background: var(--es-base-surface); border: 1px solid var(--es-neutral-strong);
+}
+.lab-nav a:hover { background: var(--es-primary-surface); }
+
+.lab-card {
+  background: var(--es-base-surface); border: 1px solid var(--es-neutral-strong);
+  border-radius: 12px; padding: 20px; margin: 20px 0;
+  scroll-margin-top: 84px;
+}
+.lab-card__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px; }
+.lab-card h2 { margin: 0; font-size: 1.25rem; line-height: 1.25; letter-spacing: -0.01em; }
+.lab-level { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; }
+.lab-level[data-level="atom"] { background: var(--es-secondary-soft); color: var(--es-secondary-text); }
+.lab-level[data-level="molecule"] { background: var(--es-primary-soft); color: var(--es-primary-text); }
+.lab-level[data-level="organism"] { background: var(--es-warning-soft); color: var(--es-warning-text); }
+.lab-class { font-size: 0.8125rem; color: var(--es-text-tertiary); }
+.lab-summary { margin: 6px 0 10px; color: var(--es-text-secondary); }
+.lab-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; font-size: 0.75rem; }
+.lab-chip { padding: 2px 8px; border-radius: 4px; background: var(--es-neutral-surface); color: var(--es-neutral-text); }
+.lab-chip--uses { background: transparent; border: 1px dashed var(--es-neutral-strong); }
+
+.lab-controls { display: flex; flex-wrap: wrap; gap: 10px 18px; padding: 12px 0; border-top: 1px solid var(--es-neutral-surface); }
+.lab-axis { display: flex; align-items: center; gap: 8px; max-width: 100%; min-width: 0; }
+.lab-axis .lab-seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.lab-axis > label, .lab-axis > span { font-size: 0.75rem; font-weight: 600; color: var(--es-text-tertiary); }
+
+.lab-stage { background: var(--es-base-bg); border-radius: 8px; padding: 12px 16px; overflow-x: auto; }
+.lab-row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px 16px; padding: 12px 0; }
+.lab-row + .lab-row { border-top: 1px dashed var(--es-neutral-strong); }
+.lab-rowlabel { flex: 0 0 100%; font-size: 0.75rem; font-weight: 600; color: var(--es-text-tertiary); }
+.lab-cell { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.lab-cell figcaption { font-size: 0.6875rem; color: var(--es-text-tertiary); }
+
+.lab-card details { margin-top: 12px; }
+.lab-card summary { cursor: pointer; font-size: 0.8125rem; font-weight: 600; color: var(--es-text-secondary); }
+.lab-card pre {
+  margin: 8px 0 0; padding: 12px; overflow-x: auto; white-space: pre-wrap; word-break: break-word;
+  font-size: 0.75rem; line-height: 1.5; border-radius: 8px; background: var(--es-neutral-soft); color: var(--es-text-primary);
+}
+.lab-a11y { margin: 8px 0 0; font-size: 0.8125rem; color: var(--es-text-tertiary); }
+
+/* ---------- personality compare ---------- */
+.lab-compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+@media (max-width: 640px) { .lab-compare { grid-template-columns: 1fr; } }
+.lab-quad { background: var(--es-base-bg); border: 1px solid var(--es-neutral-strong); border-radius: 8px; padding: 12px 16px; min-width: 0; overflow-x: auto; }
+.lab-quad h3 { margin: 0 0 4px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; color: var(--es-text-tertiary); text-transform: uppercase; }
+.lab-empty { padding: 48px 0; text-align: center; color: var(--es-text-tertiary); }

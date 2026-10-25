@@ -1,0 +1,67 @@
+/* ContactInfo — organism. IconBox + label + value (phone, email, address, hours).
+   It never restyles IconBox. It sets CONTEXT (--es-icon-box-size / -radius) and IconBox reads it,
+   so every IconBox inside inherits the size and radius with zero markup changes.
+   Context carries continuous values only. Variants (style, tone) are attributes, and attributes do not
+   inherit — set those on each IconBox. */
+
+.es-contact-info {
+  /* context handed to the IconBox below (defaults: md, soft) */
+  --es-icon-box-size: var(--es-space-500);
+  --es-icon-box-radius: var(--es-radius-medium);
+
+  display: flex;
+  align-items: center;
+  gap: var(--es-space-150);
+  font-family: var(--es-font-text);
+  color: var(--es-text-primary);
+}
+
+/* ---- size: container + type scale together ---- */
+.es-contact-info[data-size="sm"] { --es-icon-box-size: var(--es-space-400); }
+.es-contact-info[data-size="md"] { --es-icon-box-size: var(--es-space-500); }
+.es-contact-info[data-size="lg"] { --es-icon-box-size: var(--es-space-600); }
+
+/* ---- icon radius (passes straight through to every IconBox inside) ---- */
+.es-contact-info[data-icon-radius="none"] { --es-icon-box-radius: 0; }
+.es-contact-info[data-icon-radius="soft"] { --es-icon-box-radius: var(--es-radius-medium); }
+.es-contact-info[data-icon-radius="full"] { --es-icon-box-radius: var(--es-radius-full); }
+
+/* ---- layout ---- */
+.es-contact-info[data-layout="stacked"] {
+  flex-direction: column;
+  gap: var(--es-space-100);
+  text-align: center;
+}
+
+.es-contact-info__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--es-space-025);
+  min-inline-size: 0;
+}
+
+.es-contact-info__label {
+  font-size: var(--es-text-size-xs);
+  font-weight: var(--es-weight-semibold);
+  line-height: var(--es-text-leading-tight);
+  letter-spacing: var(--es-text-tracking-wide);
+  color: var(--es-text-tertiary);
+}
+
+.es-contact-info__value {
+  font-size: var(--es-text-size-md);
+  font-weight: var(--es-weight-medium);
+  line-height: var(--es-text-leading-normal);
+  color: var(--es-text-primary);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.es-contact-info[data-size="sm"] .es-contact-info__value { font-size: var(--es-text-size-sm); }
+.es-contact-info[data-size="lg"] .es-contact-info__value { font-size: var(--es-text-size-lg); }
+
+a.es-contact-info__value:hover { color: var(--es-link-hover); text-decoration: underline; }
+a.es-contact-info__value:focus-visible {
+  outline: var(--es-border-width-medium) solid var(--es-state-focus);
+  outline-offset: var(--es-border-width-medium);
+  border-radius: var(--es-radius-small);
+}
