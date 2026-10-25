@@ -498,6 +498,7 @@ function render(){
    its own stylesheets — and its live stylesheet is appended last in <body>, after the built tokens,
    which is what makes an edit win the cascade in both contexts. */
 const rootEl = document.createElement('div');
+rootEl.id = 'es-root';
 const liveEl = document.createElement("style");
 liveEl.id = "es-live";
 document.body.appendChild(rootEl);

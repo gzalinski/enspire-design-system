@@ -543,7 +543,7 @@ a.es-contact-info__value:focus-visible {
 
 :root{
   --c-bg:#EEF1F4; --c-panel:#FFF; --c-panel2:#F6F7F9; --c-line:#DCE1E8; --c-line2:#C9D0DA;
-  --c-ink:#131920; --c-ink2:#556170; --c-ink3:#86909D;
+  --c-ink:#131920; --c-ink2:#4B5665; --c-ink3:#6B7682;
   --c-acc:#131920; --c-acc-ink:#FFF; --c-focus:#3D63DD;
   --c-ok:#1D7A4C; --c-ok-bg:#E3F4EA; --c-warn:#9A5800; --c-warn-bg:#FBF0DC; --c-bad:#B42318; --c-bad-bg:#FCE7E5;
   --c-shadow:0 1px 2px rgba(19,25,32,.06),0 8px 24px rgba(19,25,32,.10);
@@ -553,7 +553,7 @@ a.es-contact-info__value:focus-visible {
 }
 :root[data-chrome="dark"]{
   --c-bg:#0C0F13; --c-panel:#14181E; --c-panel2:#1A1F27; --c-line:#262D37; --c-line2:#343D49;
-  --c-ink:#E5E9EF; --c-ink2:#9BA5B2; --c-ink3:#6B7582;
+  --c-ink:#E5E9EF; --c-ink2:#A8B2BF; --c-ink3:#8A94A2;
   --c-acc:#E5E9EF; --c-acc-ink:#0C0F13; --c-focus:#86A2FF;
   --c-ok:#55C890; --c-ok-bg:#12291E; --c-warn:#E6A643; --c-warn-bg:#2C2112; --c-bad:#F27B70; --c-bad-bg:#311715;
   --c-shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
@@ -571,7 +571,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* ---------- shell ---------- */
-.app{display:grid;grid-template-rows:auto minmax(0,1fr);height:100%}
+/* The host is pinned to the viewport instead of inheriting a height chain. Publishing re-parents this
+   page into the document body, where a percentage height against an auto-height ancestor is ignored —
+   that left the app taller than the clipped body with nothing scrollable. Never write an HTML tag in
+   this file, even inside a comment: tooling that splits the document on one will cut the stylesheet. */
+#es-root{position:fixed;inset:0;display:flex;flex-direction:column;overflow:hidden;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.app{flex:1;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr)}
 .bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--c-panel);border-bottom:1px solid var(--c-line);flex-wrap:wrap}
 .brand{display:flex;align-items:baseline;gap:8px;font-weight:600;font-size:15px;letter-spacing:-.01em;margin-right:auto}
 .brand span{font:11px var(--c-mono);color:var(--c-ink3);font-weight:400}
@@ -746,10 +752,17 @@ button,input,select,textarea{font:inherit;color:inherit}
   .only-narrow{display:inline-flex}
 }
 /* Narrow phones: the uppercase control labels are the last thing worth the width. */
-@media (max-width:460px){
+@media (max-width:560px){
+  /* The bar was eating 40% of a phone screen. Drop the uppercase labels, shrink the segmented
+     controls, and let search take its own row so the rest fits on two compact lines. */
   .ctl>span:not(.sr){display:none}
-  .bar{gap:8px;padding:9px 10px}
-  #q{width:100%!important;order:9}
+  .bar{gap:6px;padding:7px 9px}
+  .seg{padding:1px;border-radius:7px}
+  .seg button{padding:4px 7px;font-size:12px}
+  .btn{padding:5px 9px;font-size:12px}
+  .brand{font-size:14px;gap:5px}
+  .brand span{display:none}
+  #q{width:100%!important;order:9;padding:5px 9px}
 }
 @media (max-width:860px){
   .split{grid-template-columns:minmax(0,1fr)}
@@ -1267,6 +1280,7 @@ function render(){
    its own stylesheets — and its live stylesheet is appended last in <body>, after the built tokens,
    which is what makes an edit win the cascade in both contexts. */
 const rootEl = document.createElement('div');
+rootEl.id = 'es-root';
 const liveEl = document.createElement("style");
 liveEl.id = "es-live";
 document.body.appendChild(rootEl);
