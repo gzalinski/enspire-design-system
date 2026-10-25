@@ -730,13 +730,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 /* dialog + toast */
 .back{position:fixed;inset:0;background:rgba(10,13,17,.5);z-index:50;display:grid;place-items:center;padding:16px}
-.dlg{background:var(--c-panel);border:1px solid var(--c-line);border-radius:14px;box-shadow:var(--c-shadow);width:min(840px,100%);max-height:100%;display:flex;flex-direction:column}
-.dlg header{display:flex;align-items:center;gap:8px;padding:13px 15px;border-bottom:1px solid var(--c-line)}
+.dlg{background:var(--c-panel);border:1px solid var(--c-line);border-radius:14px;box-shadow:var(--c-shadow);width:min(840px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;min-height:0}
+.dlg header{flex:none;display:flex;align-items:center;gap:8px;padding:13px 15px;border-bottom:1px solid var(--c-line)}
 .dlg header h2{margin:0;font-size:15px;margin-right:auto}
 .dlg .tabs{display:flex;gap:5px;padding:11px 15px 0;flex-wrap:wrap}
 .dlg .note{padding:9px 15px 0;margin:0;color:var(--c-ink2);font-size:12.5px;max-width:76ch;line-height:1.5}
-.dlg pre{margin:11px 15px;padding:11px;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:8px;overflow:auto;font:11.5px/1.5 var(--c-mono);white-space:pre;flex:1;min-height:200px}
-.dlg footer{display:flex;gap:8px;padding:11px 15px;border-top:1px solid var(--c-line);justify-content:flex-end;flex-wrap:wrap}
+.dlg pre{margin:11px 15px;padding:11px;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:8px;overflow:auto;font:11.5px/1.5 var(--c-mono);white-space:pre;flex:1 1 auto;min-height:0}
+.dlg footer{flex:none;display:flex;gap:8px;padding:11px 15px;border-top:1px solid var(--c-line);justify-content:flex-end;flex-wrap:wrap}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--c-acc);color:var(--c-acc-ink);padding:8px 15px;border-radius:8px;font-size:13px;box-shadow:var(--c-shadow);z-index:60}
 
 @media (max-width:1180px){
@@ -1218,7 +1218,25 @@ function toast(msg){
   const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
   document.body.appendChild(t); setTimeout(() => t.remove(), 1800);
 }
-function download(name, text){
+/* Saving differs by where the Lab is open. From disk (the repo's own dist/lab.html) a plain link
+   works. Published as an artifact, the frame may not download directly and must go through the
+   downloads capability, whose extension allowlist has no `css` — so CSS is offered as .txt there. */
+let dl; // undefined = not asked yet, null = unavailable
+const dlReady = (window.claude && window.claude.use ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null))
+  .then(d => (dl = d));
+
+async function download(name, text){
+  if (dl === undefined) await dlReady;
+  if (dl){
+    try {
+      await dl.save({ filename: name.replace(/\.css$/, '.txt'), data: text });
+      toast('Saved');
+    } catch (e) {
+      const code = e && e.code;
+      toast(code === 'declined' ? 'Save cancelled' : code === 'rate_limited' ? 'Try again in a moment' : 'Could not save — use Copy');
+    }
+    return;
+  }
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([text], { type:'text/plain' }));
   a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);

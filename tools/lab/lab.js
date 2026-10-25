@@ -448,7 +448,25 @@ function toast(msg){
   const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
   document.body.appendChild(t); setTimeout(() => t.remove(), 1800);
 }
-function download(name, text){
+/* Saving differs by where the Lab is open. From disk (the repo's own dist/lab.html) a plain link
+   works. Published as an artifact, the frame may not download directly and must go through the
+   downloads capability, whose extension allowlist has no `css` — so CSS is offered as .txt there. */
+let dl; // undefined = not asked yet, null = unavailable
+const dlReady = (window.claude && window.claude.use ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null))
+  .then(d => (dl = d));
+
+async function download(name, text){
+  if (dl === undefined) await dlReady;
+  if (dl){
+    try {
+      await dl.save({ filename: name.replace(/\.css$/, '.txt'), data: text });
+      toast('Saved');
+    } catch (e) {
+      const code = e && e.code;
+      toast(code === 'declined' ? 'Save cancelled' : code === 'rate_limited' ? 'Try again in a moment' : 'Could not save — use Copy');
+    }
+    return;
+  }
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([text], { type:'text/plain' }));
   a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
