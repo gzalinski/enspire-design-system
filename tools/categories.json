@@ -1,0 +1,14 @@
+{
+  "$description": "Category registry. Every component's meta.json must name one of these ids; the linter enforces it and the Lab builds its menu from this order. Adapted from the Atlassian grouping, minus the app-shell groups, plus the content groups a marketing site needs.",
+  "categories": [
+    { "id": "actions",    "label": "Actions",         "note": "Buttons, links, anything that triggers something" },
+    { "id": "forms",      "label": "Forms & input",   "note": "Fields, choices, pickers, form layout" },
+    { "id": "media",      "label": "Images & icons",  "note": "Icons, avatars, images, logos" },
+    { "id": "content",    "label": "Content",         "note": "Cards, posts, products, quotes, lists, contact blocks" },
+    { "id": "feedback",   "label": "Feedback & status","note": "Alerts, notices, toasts, badges, tags, progress" },
+    { "id": "navigation", "label": "Navigation",      "note": "Menus, tabs, breadcrumbs, pagination, sliders" },
+    { "id": "overlays",   "label": "Overlays",        "note": "Modals, drawers, dropdowns, tooltips, popovers" },
+    { "id": "layout",     "label": "Layout",          "note": "Grid, stack, section, container, divider" },
+    { "id": "data",       "label": "Data display",    "note": "Tables, stats, counters" }
+  ]
+}

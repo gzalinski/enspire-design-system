@@ -11,8 +11,13 @@ npm run build    # tokens/*.json -> dist/enspire-tokens.css + dist/tokens.json
 npm run icons    # components/icon/svg/*.svg -> glyphs.css (+ icon list in meta.json)
 npm run check    # lint (4 rules)
 npm run index    # INDEX.md, generated from meta.json — never edit it by hand
-npm run lab      # dist/lab.html: every component, every variant, theme/density/radius, personality compare
+npm run lab      # dist/lab.html: the Lab — menu, every variant, live token editing, export
 ```
+
+**The Lab is the main tool.** `dist/lab.html` is one self-contained file: browse by category, flip every
+variant, retune tokens live (anchors regenerate a whole ramp in OKLCH), check contrast, and export the
+result as a theme. Open it from disk or publish it; it needs no server. Everything in it is generated from
+`meta.json` and `tokens/` — never hand-edit `dist/`.
 
 ## Before you build anything
 
@@ -27,6 +32,7 @@ tokens/core.json          structure + roles + component token contracts (brand-a
 tokens/themes/*.json      palettes + personality knobs. THE ONLY place raw hex is legal.
 primitives/               layout helpers (Box, Stack, Text). No business logic.
 components/<name>/        meta.json  <name>.css        (flat — no atoms/ folder; level is derived)
+tools/categories.json     the menu's category list. A component names one of these ids.
 patterns/                 compositions of components (Hero, PricingTable, AuthForm)
 templates/                page skeletons with slots, no real content
 bridges/                  maps third-party CSS APIs onto --es-* (e.g. Gravity Forms)
@@ -42,6 +48,8 @@ dist/                     generated, committed. Never edit by hand.
 3. **A component token must resolve through a semantic token** (`{semantic.*}`), never a palette stop or literal.
 4. **Atomic level is derived, never declared:** no `uses` = atom; uses only atoms = molecule; otherwise organism.
    A component's CSS may only style classes of components listed in its `uses`.
+5. **meta.json must be usable:** a `category` from `tools/categories.json`, a `preview`, and `defaults`
+   that name real variant values. Without them a component silently vanishes from the Lab menu.
 
 Escape hatch, reason mandatory: `/* es-disable raw-values — why */`. A bare disable is an error.
 Audit all deviations: `grep -rn "es-disable" .`
@@ -78,7 +86,7 @@ Audit all deviations: `grep -rn "es-disable" .`
 
 ```json
 {
-  "name": "icon-box", "class": "es-icon-box",
+  "name": "icon-box", "class": "es-icon-box", "category": "media",
   "summary": "One sentence.", "tags": ["icon", "container"],
   "uses": ["icon"], "css": ["icon-box.css"],
   "variants": { "style": ["fill", "outline", "soft", "text"], "size": ["sm", "md", "lg"] },
@@ -90,13 +98,15 @@ Audit all deviations: `grep -rn "es-disable" .`
 ```
 
 `{axis}` placeholders in `preview` are filled per variant by the Lab. There is no `level` field (derived).
+`category` must be an id from `tools/categories.json` — it decides where the component sits in the menu.
 `tags` are how future-you finds it by intent ("I need an upload thing"). `defaults` must match the CSS defaults.
 
 ## Definition of done for a component
 
 - [ ] `meta.json` complete (`uses`, `defaults`, `context`, `preview`, `a11y`)
 - [ ] `npm run verify` is clean (lint, INDEX.md and Lab all regenerate)
-- [ ] Opened in the Lab: every variant looks right in light **and** dark, and at density compact/comfortable and radius sharp/round
+- [ ] Opened in the Lab: hit **Expand all** and check every combination in light **and** dark, at density
+      compact/comfortable and radius sharp/round
 - [ ] Mobile: no horizontal overflow at 320px
 
 ## Do not
@@ -107,4 +117,5 @@ or speculative components. Add a fifth lint rule only when something real has al
 ## Status
 
 Faza 0 (tokens, build, lint) and Faza 1 (Icon -> IconBox -> ContactInfo, Lab, INDEX generator) done.
+Lab v2 adds the category menu, live token editing and export.
 Next: Faza 2, Gravity Forms bridge. Source material: `enspire-design-system-principles.md` in the Claude project.

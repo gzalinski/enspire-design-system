@@ -18,6 +18,8 @@
 
   "palette": {
     "naviblue": {
+      "$anchor": "600",
+      "$label": "Primary brand",
       "$description": "Primary brand ramp.",
       "50":   { "$type": "color", "$value": "#EBF0FA" },
       "100":  { "$type": "color", "$value": "#D4E0F5" },
@@ -40,6 +42,8 @@
     },
 
     "verdant": {
+      "$anchor": "500",
+      "$label": "Secondary brand",
       "$description": "Secondary brand ramp (teal-emerald).",
       "50":   { "$type": "color", "$value": "#E3F6F1" },
       "100":  { "$type": "color", "$value": "#C1EDE3" },
@@ -58,6 +62,8 @@
     },
 
     "green": {
+      "$anchor": "500",
+      "$label": "Success",
       "$description": "Success. Deliberately brighter and more yellow than verdant, so positive feedback is never confused with the secondary brand color.",
       "50":  { "$type": "color", "$value": "#DCFCE7" },
       "100": { "$type": "color", "$value": "#BBF7D0" },
@@ -72,6 +78,8 @@
     },
 
     "amber": {
+      "$anchor": "500",
+      "$label": "Warning",
       "$description": "Warning.",
       "50":  { "$type": "color", "$value": "#FEF3C7" },
       "100": { "$type": "color", "$value": "#FDE68A" },
@@ -86,6 +94,8 @@
     },
 
     "red": {
+      "$anchor": "500",
+      "$label": "Error",
       "$description": "Error.",
       "50":  { "$type": "color", "$value": "#FEE2E2" },
       "100": { "$type": "color", "$value": "#FECACA" },
@@ -100,6 +110,8 @@
     },
 
     "slate": {
+      "$anchor": "500",
+      "$label": "Neutral",
       "$description": "Neutral UI ramp.",
       "50":  { "$type": "color", "$value": "#F1F5F9" },
       "100": { "$type": "color", "$value": "#E2E8F0" },
@@ -113,6 +125,8 @@
     },
 
     "canvas": {
+      "$anchor": "50",
+      "$label": "Surfaces",
       "$description": "Page and surface backgrounds. 0 = white, 950 = darkest.",
       "0":   { "$type": "color", "$value": "#FFFFFF" },
       "50":  { "$type": "color", "$value": "#F4F6F9" },
@@ -125,6 +139,8 @@
     },
 
     "ink": {
+      "$anchor": "900",
+      "$label": "Text",
       "$description": "Text colors. Plain stops for light mode, d-stops for dark.",
       "0":    { "$type": "color", "$value": "#FFFFFF" },
       "100":  { "$type": "color", "$value": "#B4C0CC" },

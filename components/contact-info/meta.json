@@ -1,6 +1,7 @@
 {
   "name": "contact-info",
   "class": "es-contact-info",
+  "category": "content",
   "summary": "One contact line: icon container, small label, value (phone, email, address, hours).",
   "tags": [
     "contact",

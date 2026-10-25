@@ -19,7 +19,7 @@ function variantsOf(meta) {
 
 const line = (item) => {
   const m = item.meta;
-  return `${m.name} | .${m.class} | ${(m.tags || []).join(',')} | ${variantsOf(m)} | ${(m.uses || []).join(',') || '—'} | ${item.path}`;
+  return `${m.name} | .${m.class} | ${m.category || '?'} | ${(m.tags || []).join(',')} | ${variantsOf(m)} | ${(m.uses || []).join(',') || '—'} | ${item.path}`;
 };
 
 const section = (title, level, empty) => {
@@ -33,7 +33,7 @@ const out = `# Component index
 > Read this first. If something close exists, extend its variants instead of adding a sibling.
 > Level (atom / molecule / organism) is derived from \`uses\`, never declared.
 
-Format: \`name | .class | tags | variants | uses | path\`
+Format: \`name | .class | category | tags | variants | uses | path\`
 
 ${section('Atoms', 'atom', 'none yet')}
 ${section('Molecules', 'molecule', 'none yet')}

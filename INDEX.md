@@ -4,16 +4,16 @@
 > Read this first. If something close exists, extend its variants instead of adding a sibling.
 > Level (atom / molecule / organism) is derived from `uses`, never declared.
 
-Format: `name | .class | tags | variants | uses | path`
+Format: `name | .class | category | tags | variants | uses | path`
 
 ## Atoms
-icon | .es-icon | icon,glyph,svg,lucide,decorative | size(sm|md|lg) name(38) | — | components/icon/
+icon | .es-icon | media | icon,glyph,svg,lucide,decorative | size(sm|md|lg) name(38) | — | components/icon/
 
 ## Molecules
-icon-box | .es-icon-box | icon,container,badge,decorative,feature,avatar-like | style(fill|outline|soft|text) size(sm|md|lg) radius(none|soft|full) tone(primary|secondary|neutral|success|warning|error) | icon | components/icon-box/
+icon-box | .es-icon-box | media | icon,container,badge,decorative,feature,avatar-like | style(fill|outline|soft|text) size(sm|md|lg) radius(none|soft|full) tone(primary|secondary|neutral|success|warning|error) | icon | components/icon-box/
 
 ## Organisms
-contact-info | .es-contact-info | contact,phone,email,address,footer,header,info,list-item | layout(inline|stacked) size(sm|md|lg) icon-radius(none|soft|full) | icon-box | components/contact-info/
+contact-info | .es-contact-info | content | contact,phone,email,address,footer,header,info,list-item | layout(inline|stacked) size(sm|md|lg) icon-radius(none|soft|full) | icon-box | components/contact-info/
 
 ## Patterns
 <!-- none yet -->

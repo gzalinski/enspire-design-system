@@ -44,7 +44,18 @@ function load() {
   };
   [...items.keys()].sort().forEach(visit);
 
-  return { items, order, ROOT };
+  // Patterns are compositions of components. Same meta.json shape, their own folder and menu group.
+  const patterns = [];
+  const pdir = path.join(ROOT, 'patterns');
+  for (const entry of fs.existsSync(pdir) ? fs.readdirSync(pdir, { withFileTypes: true }) : []) {
+    if (!entry.isDirectory()) continue;
+    const metaPath = path.join(pdir, entry.name, 'meta.json');
+    if (!fs.existsSync(metaPath)) continue;
+    const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+    patterns.push({ dir: path.join(pdir, entry.name), meta, path: `patterns/${entry.name}/`, level: 'pattern' });
+  }
+
+  return { items, order, patterns, ROOT };
 }
 
 /** Concatenate a component's CSS files in the order meta.json lists them. */

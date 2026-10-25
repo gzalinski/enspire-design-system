@@ -212,4 +212,56 @@ ${dark.map((l) => '  ' + l).join('\n')}
   console.log(`  dist/tokens.json`);
 }
 
-build(process.argv[2] || 'enspire-default');
+/**
+ * What the Lab needs in the browser to recompute tokens live: the raw palette, and which palette
+ * stop each semantic token points at. Exported (rather than duplicated in lab.js) so there is one
+ * resolution logic, not two that drift.
+ */
+function sources(themeName = 'enspire-default') {
+  const core = readJSON(path.join(ROOT, 'tokens', 'core.json'));
+  const theme = readJSON(path.join(ROOT, 'tokens', 'themes', `${themeName}.json`));
+  const tree = { ...theme, ...core };
+
+  // Palette ramps, flat: "naviblue.600" -> hex. Anchors come from the theme's own $anchor.
+  const palette = {};
+  const ramps = {};
+  for (const [ramp, group] of Object.entries(theme.palette || {})) {
+    if (ramp.startsWith('$')) continue;
+    const stops = [];
+    for (const [stop, token] of Object.entries(group)) {
+      if (stop.startsWith('$')) continue;
+      palette[`${ramp}.${stop}`] = token.$value;
+      stops.push(stop);
+    }
+    ramps[ramp] = { stops, anchor: group.$anchor || null, label: group.$label || ramp };
+  }
+
+  // Semantic tokens: the reference path per mode, so the browser can re-resolve after an edit.
+  // A component token points at another emitted token, so it needs no entry — it inherits via var().
+  const semantic = {};
+  for (const [trail, token] of walk(core.semantic || {}, ['semantic'])) {
+    const name = cssName(trail);
+    const ref = (v) => (typeof v === 'string' && /^\{palette\.[^}]+\}$/.test(v) ? v.slice(9, -1) : null);
+    semantic[name] = { light: ref(token.$value), dark: ref(token.$dark || token.$value), use: token.$use || '' };
+  }
+
+  // Scales that the editor can retune (space base, radius steps, type sizes, weights).
+  const scales = {};
+  for (const [trail, token, scale] of walk(core.scale || {}, ['scale'])) {
+    scales[cssName(trail)] = { group: trail[1], value: String(token.$value), scale: scale || null, use: token.$use || '' };
+  }
+
+  return {
+    theme: { name: theme.$name || themeName, file: themeName },
+    palette, ramps, semantic, scales,
+    typeface: Object.fromEntries(Object.entries(theme.typeface || {}).filter(([k]) => !k.startsWith('$')).map(([k, v]) => [k, v.$value])),
+    personality: {
+      density: lookup(tree, 'personality.density').$value,
+      radiusScale: lookup(tree, 'personality.radiusScale').$value,
+    },
+  };
+}
+
+module.exports = { build, sources };
+
+if (require.main === module) build(process.argv[2] || 'enspire-default');

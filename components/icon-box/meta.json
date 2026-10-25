@@ -1,6 +1,7 @@
 {
   "name": "icon-box",
   "class": "es-icon-box",
+  "category": "media",
   "summary": "An Icon inside a styled container (fill, outline, soft or text) with size, radius and tone.",
   "tags": [
     "icon",

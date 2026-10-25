@@ -155,6 +155,24 @@ for (const f of walkFiles(path.join(ROOT, 'components'), ['meta.json'])) {
   }
 }
 
+// Category must be one a listed category id: a typo'd or missing one drops the component out of the
+// Lab's menu silently, which is how a component gets written twice.
+const CATEGORIES = new Set(
+  JSON.parse(fs.readFileSync(path.join(__dirname, 'categories.json'), 'utf8')).categories.map((c) => c.id)
+);
+for (const [name, { file, meta }] of metas) {
+  if (!meta.category) report(file, 1, 'meta', `no "category" — pick one of: ${[...CATEGORIES].join(', ')}.`);
+  else if (!CATEGORIES.has(meta.category)) report(file, 1, 'meta', `category "${meta.category}" is not in tools/categories.json.`);
+  if (!meta.preview) report(file, 1, 'meta', 'no "preview" — the Lab has nothing to render.');
+  for (const axis of Object.keys(meta.defaults || {})) {
+    const values = (meta.variants || {})[axis];
+    if (!values) report(file, 1, 'meta', `defaults.${axis} has no matching variants.${axis}.`);
+    else if (!values.includes(meta.defaults[axis])) {
+      report(file, 1, 'meta', `defaults.${axis} is "${meta.defaults[axis]}", which is not one of its variants.`);
+    }
+  }
+}
+
 const levelCache = new Map();
 function computeLevel(name, trail = []) {
   if (levelCache.has(name)) return levelCache.get(name);

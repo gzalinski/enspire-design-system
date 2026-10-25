@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -535,290 +535,823 @@ a.es-contact-info__value:focus-visible {
   border-radius: var(--es-radius-small);
 }
 
-/* Enspire Lab chrome. Lives in tools/, so it is not linted — but it still runs on the system's own tokens,
-   which means switching theme / density / radius restyles the Lab itself. */
 
-*, *::before, *::after { box-sizing: border-box; }
-html { color-scheme: light dark; }
-:root[data-theme="light"] { color-scheme: light; }
-:root[data-theme="dark"] { color-scheme: dark; }
+/* Enspire Lab chrome.
+   Deliberately uses its OWN neutral variables, never --es-*: the Lab edits Enspire tokens live, and
+   chrome built on those tokens would resize and recolour itself while you work. Graphite on purpose,
+   so the only colour on screen belongs to the design system. */
 
-body {
-  margin: 0;
-  background: var(--es-base-bg);
-  color: var(--es-text-primary);
-  font-family: var(--es-font-text);
-  font-size: var(--es-text-size-md);
-  line-height: var(--es-text-leading-normal);
+:root{
+  --c-bg:#EEF1F4; --c-panel:#FFF; --c-panel2:#F6F7F9; --c-line:#DCE1E8; --c-line2:#C9D0DA;
+  --c-ink:#131920; --c-ink2:#556170; --c-ink3:#86909D;
+  --c-acc:#131920; --c-acc-ink:#FFF; --c-focus:#3D63DD;
+  --c-ok:#1D7A4C; --c-ok-bg:#E3F4EA; --c-warn:#9A5800; --c-warn-bg:#FBF0DC; --c-bad:#B42318; --c-bad-bg:#FCE7E5;
+  --c-shadow:0 1px 2px rgba(19,25,32,.06),0 8px 24px rgba(19,25,32,.10);
+  --c-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --c-rail:300px; --c-side:232px;
+  color-scheme:light;
+}
+:root[data-chrome="dark"]{
+  --c-bg:#0C0F13; --c-panel:#14181E; --c-panel2:#1A1F27; --c-line:#262D37; --c-line2:#343D49;
+  --c-ink:#E5E9EF; --c-ink2:#9BA5B2; --c-ink3:#6B7582;
+  --c-acc:#E5E9EF; --c-acc-ink:#0C0F13; --c-focus:#86A2FF;
+  --c-ok:#55C890; --c-ok-bg:#12291E; --c-warn:#E6A643; --c-warn-bg:#2C2112; --c-bad:#F27B70; --c-bad-bg:#311715;
+  --c-shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  color-scheme:dark;
 }
 
-button, select, input { font: inherit; color: inherit; }
-:focus-visible { outline: 2px solid var(--es-state-focus); outline-offset: 2px; }
-code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--c-bg);color:var(--c-ink);
+  font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--c-focus);outline-offset:2px}
+.mono{font-family:var(--c-mono)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-/* ---------- top bar ---------- */
-.lab-bar {
-  position: sticky; top: 0; z-index: 20;
-  background: var(--es-base-surface);
-  border-bottom: 1px solid var(--es-neutral-strong);
+/* ---------- shell ---------- */
+.app{display:grid;grid-template-rows:auto minmax(0,1fr);height:100%}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--c-panel);border-bottom:1px solid var(--c-line);flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:8px;font-weight:600;font-size:15px;letter-spacing:-.01em;margin-right:auto}
+.brand span{font:11px var(--c-mono);color:var(--c-ink3);font-weight:400}
+.seg{display:inline-flex;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:8px;padding:2px;max-width:100%;min-width:0;overflow-x:auto;scrollbar-width:none}
+.seg button{flex:none;white-space:nowrap;border:0;background:none;padding:5px 10px;border-radius:6px;cursor:pointer;color:var(--c-ink2);font-size:13px;font-weight:500}
+.seg button:hover{color:var(--c-ink)}
+.seg button[aria-pressed="true"]{background:var(--c-acc);color:var(--c-acc-ink)}
+.ctl{display:flex;align-items:center;gap:7px;min-width:0;flex:0 1 auto}
+.ctl>span{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--c-ink3);white-space:nowrap}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--c-line);background:var(--c-panel);border-radius:8px;padding:6px 11px;cursor:pointer;font-size:13px;font-weight:500;white-space:nowrap}
+.btn:hover{border-color:var(--c-line2)}
+.btn.solid{background:var(--c-acc);color:var(--c-acc-ink);border-color:var(--c-acc)}
+.inp{border:1px solid var(--c-line);background:var(--c-panel2);border-radius:8px;padding:6px 10px;font-size:13px;min-width:0}
+.only-narrow{display:none}
+
+.split{display:grid;grid-template-columns:var(--c-side) minmax(0,1fr) var(--c-rail);min-height:0}
+.side,.rail{background:var(--c-panel);min-height:0;overflow:auto;overscroll-behavior:contain}
+.side{border-right:1px solid var(--c-line)}
+.rail{border-left:1px solid var(--c-line);display:flex;flex-direction:column}
+.canvas{min-height:0;overflow:auto;overscroll-behavior:contain;padding:18px}
+
+/* ---------- menu ---------- */
+.side{padding:12px 10px 40px}
+.menu-h{display:flex;align-items:center;justify-content:space-between;padding:10px 8px 4px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--c-ink3)}
+.menu-h b{font-weight:600;font-family:var(--c-mono);font-size:11px}
+.navi{display:flex;flex-direction:column;gap:1px}
+.navi a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--c-ink2);padding:6px 8px;border-radius:7px;font-size:13px;font-weight:500}
+.navi a:hover{background:var(--c-panel2);color:var(--c-ink)}
+.navi a[aria-current="page"]{background:var(--c-acc);color:var(--c-acc-ink)}
+.navi a .lv{margin-left:auto;font:10px var(--c-mono);opacity:.65;text-transform:uppercase}
+.cat{margin-top:10px}
+.cat>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:7px;
+  font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--c-ink3)}
+.cat>summary::-webkit-details-marker{display:none}
+.cat>summary:hover{background:var(--c-panel2)}
+.cat>summary::before{content:"▸";font-size:9px;transition:transform .12s}
+.cat[open]>summary::before{transform:rotate(90deg)}
+.cat>summary em{margin-left:auto;font-style:normal;font-family:var(--c-mono);opacity:.8}
+.menu-empty{padding:6px 8px;font-size:12px;color:var(--c-ink3);line-height:1.5}
+
+/* ---------- canvas ---------- */
+.card{background:var(--c-panel);border:1px solid var(--c-line);border-radius:12px;padding:18px;margin-bottom:16px}
+.card-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 10px}
+.card-h h2{margin:0;font-size:19px;letter-spacing:-.01em}
+.card-h code{font:12px var(--c-mono);color:var(--c-ink3)}
+.lv{font:600 10px var(--c-mono);letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:var(--c-panel2);color:var(--c-ink2);border:1px solid var(--c-line)}
+.lv[data-level="atom"]{color:var(--c-ok);background:var(--c-ok-bg);border-color:transparent}
+.lv[data-level="molecule"]{color:var(--c-focus);background:color-mix(in srgb,var(--c-focus) 12%,transparent);border-color:transparent}
+.lv[data-level="organism"]{color:var(--c-warn);background:var(--c-warn-bg);border-color:transparent}
+.sum{margin:7px 0 10px;color:var(--c-ink2);max-width:72ch}
+.chips{display:flex;flex-wrap:wrap;gap:5px;font-size:11.5px}
+.chip{padding:2px 8px;border-radius:5px;background:var(--c-panel2);color:var(--c-ink2);font-family:var(--c-mono)}
+.chip.use{background:none;border:1px dashed var(--c-line2)}
+
+.props{display:flex;flex-direction:column;gap:7px;padding:12px 0;margin-top:12px;border-top:1px solid var(--c-line)}
+.props-h{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--c-ink3)}
+.props-h .btn{margin-left:auto;padding:3px 9px;font-size:12px}
+.prop{display:grid;grid-template-columns:96px auto minmax(0,1fr);gap:8px;align-items:center}
+.prop>label{font:12px var(--c-mono);color:var(--c-ink2);overflow:hidden;text-overflow:ellipsis}
+.exp{border:1px solid var(--c-line);background:var(--c-panel2);border-radius:6px;width:26px;height:26px;cursor:pointer;
+  display:grid;place-items:center;color:var(--c-ink3);font-size:12px;flex:none}
+.exp:hover{color:var(--c-ink);border-color:var(--c-line2)}
+.exp[aria-pressed="true"]{background:var(--c-acc);color:var(--c-acc-ink);border-color:var(--c-acc)}
+.prop .seg{background:var(--c-panel2)}
+.prop select.inp{max-width:260px}
+.prop .cnt{font:11px var(--c-mono);color:var(--c-ink3)}
+
+.stage{background:var(--c-bg);border:1px solid var(--c-line);border-radius:10px;padding:6px 14px;overflow-x:auto}
+.srow{padding:12px 0}
+.srow+.srow{border-top:1px dashed var(--c-line)}
+.srow>b{display:block;font:600 11px var(--c-mono);color:var(--c-ink3);margin-bottom:9px}
+.cells{display:flex;flex-wrap:wrap;align-items:flex-start;gap:10px 16px}
+.cell{margin:0;display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0}
+.cell figcaption{font:10.5px var(--c-mono);color:var(--c-ink3);white-space:nowrap}
+.card details{margin-top:12px}
+.card summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--c-ink2)}
+.card pre{margin:8px 0 0;padding:11px;overflow:auto;white-space:pre-wrap;word-break:break-word;
+  font:11.5px/1.55 var(--c-mono);border-radius:8px;background:var(--c-panel2);border:1px solid var(--c-line)}
+.a11y{margin:10px 0 0;font-size:12.5px;color:var(--c-ink3);max-width:80ch}
+.a11y b{color:var(--c-ink2)}
+
+/* personality compare */
+.quads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.quad{background:var(--c-bg);border:1px solid var(--c-line);border-radius:9px;padding:12px;min-width:0;overflow-x:auto}
+.quad h3{margin:0 0 8px;font:600 10px var(--c-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--c-ink3)}
+
+/* ---------- token rail ---------- */
+.rail-tabs{flex:none;position:sticky;top:0;z-index:2;display:flex;gap:2px;padding:8px 8px 0;background:var(--c-panel);border-bottom:1px solid var(--c-line);overflow-x:auto;scrollbar-width:none}
+.rail-tabs button{flex:none;border:0;background:none;padding:7px 9px 9px;cursor:pointer;color:var(--c-ink3);font-size:12.5px;font-weight:500;border-bottom:2px solid transparent;white-space:nowrap}
+.rail-tabs button[aria-selected="true"]{color:var(--c-ink);border-bottom-color:var(--c-ink)}
+.pane{flex:none;padding:14px;display:flex;flex-direction:column;gap:16px}
+.pane h3{margin:0;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--c-ink3)}
+.pane .note{margin:0;font-size:12px;color:var(--c-ink3);line-height:1.5}
+.grp{display:flex;flex-direction:column;gap:7px}
+
+.anch{border:1px solid var(--c-line);border-radius:10px;background:var(--c-panel2);padding:9px;display:grid;gap:8px}
+.anch-h{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center}
+.anch-h b{font-size:12.5px;display:block}
+.anch-h small{font:10.5px var(--c-mono);color:var(--c-ink3)}
+.sw{position:relative;width:32px;height:32px;border-radius:7px;border:1px solid var(--c-line2);overflow:hidden;flex:none;cursor:pointer}
+.sw input{position:absolute;inset:-8px;width:calc(100% + 16px);height:calc(100% + 16px);border:0;padding:0;opacity:0;cursor:pointer}
+.sw i{position:absolute;inset:0}
+.ramp{display:grid;grid-auto-flow:column;height:13px;border-radius:4px;overflow:hidden}
+.ramp i{display:block}
+.hex{width:82px;border:1px solid var(--c-line);background:var(--c-panel);border-radius:6px;padding:3px 6px;font:11.5px var(--c-mono);text-transform:uppercase}
+.ico{border:0;background:none;color:var(--c-ink3);cursor:pointer;padding:4px 6px;border-radius:6px;font-size:11px}
+.ico:hover{color:var(--c-ink);background:var(--c-panel)}
+.ico[disabled]{opacity:0;pointer-events:none}
+
+.trow{display:grid;grid-template-columns:1fr auto;gap:3px 8px;padding:5px 6px;border-radius:7px;align-items:center}
+.trow:hover{background:var(--c-panel2)}
+.trow .nm{font:11.5px var(--c-mono);overflow-wrap:anywhere}
+.trow .nm em{font-style:normal;color:var(--c-warn)}
+.pair{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.pair .one{display:flex;align-items:center;gap:5px;min-width:0}
+.pair .th{font-size:9.5px;color:var(--c-ink3);width:10px;text-transform:uppercase}
+.pair .sw{width:21px;height:21px;border-radius:5px}
+.pair .hex{width:auto;min-width:0;flex:1}
+
+.num{display:grid;grid-template-columns:1fr auto;gap:3px 9px;align-items:center}
+.num label{font:11.5px var(--c-mono);color:var(--c-ink2)}
+.num input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--c-acc)}
+.num .v{display:flex;align-items:center;gap:3px}
+.num .v input{width:66px;border:1px solid var(--c-line);background:var(--c-panel);border-radius:6px;padding:3px 5px;font:11.5px var(--c-mono);text-align:right}
+.num .v span{font:10.5px var(--c-mono);color:var(--c-ink3)}
+.num small{grid-column:1/-1;font-size:11px;color:var(--c-ink3);line-height:1.4}
+
+.ctab{width:100%;border-collapse:collapse;font-size:12px}
+.ctab th{text-align:left;font:600 10px var(--c-mono);letter-spacing:.04em;text-transform:uppercase;color:var(--c-ink3);padding:5px 4px;border-bottom:1px solid var(--c-line)}
+.ctab td{padding:5px 4px;border-bottom:1px solid var(--c-line);vertical-align:middle}
+.ctab td:first-child{font:10.5px/1.35 var(--c-mono);color:var(--c-ink2)}
+.pr{display:inline-grid;place-items:center;width:30px;height:22px;border-radius:5px;font-weight:600;font-size:12px}
+.ratio{font:11.5px var(--c-mono);font-variant-numeric:tabular-nums}
+.tag{font:600 9.5px var(--c-mono);padding:1px 5px;border-radius:999px;white-space:nowrap}
+.tag.ok{background:var(--c-ok-bg);color:var(--c-ok)}
+.tag.lg{background:var(--c-warn-bg);color:var(--c-warn)}
+.tag.bad{background:var(--c-bad-bg);color:var(--c-bad)}
+
+/* foundations canvas */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,74px),1fr));gap:7px}
+.fsw{border:0;padding:0;background:none;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px;color:inherit}
+.fsw i{display:block;height:40px;border-radius:7px;border:1px solid var(--c-line)}
+.fsw b{font:500 10.5px var(--c-mono);overflow-wrap:anywhere}
+.fsw small{font:10.5px var(--c-mono);color:var(--c-ink3)}
+.frow{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:14px;padding:11px 0;border-bottom:1px solid var(--c-line);align-items:baseline}
+.frow:last-child{border-bottom:0}
+.frow .m{font:10.5px/1.5 var(--c-mono);color:var(--c-ink3)}
+.frow .m b{color:var(--c-ink2);font-weight:500}
+.fspace{display:grid;grid-template-columns:110px 54px 1fr;gap:10px;align-items:center;font:10.5px var(--c-mono);color:var(--c-ink3);padding:3px 0}
+.fspace b{color:var(--c-ink2);font-weight:500}
+.fspace i{display:block;height:11px;border-radius:2px;background:var(--c-line2)}
+.frad{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:14px}
+.frad div{display:flex;flex-direction:column;gap:5px;font:10.5px var(--c-mono);color:var(--c-ink3)}
+.frad b{color:var(--c-ink2);font-weight:500}
+.frad i{display:block;height:54px;background:var(--c-panel2);border:2px solid var(--c-line2)}
+
+/* dialog + toast */
+.back{position:fixed;inset:0;background:rgba(10,13,17,.5);z-index:50;display:grid;place-items:center;padding:16px}
+.dlg{background:var(--c-panel);border:1px solid var(--c-line);border-radius:14px;box-shadow:var(--c-shadow);width:min(840px,100%);max-height:100%;display:flex;flex-direction:column}
+.dlg header{display:flex;align-items:center;gap:8px;padding:13px 15px;border-bottom:1px solid var(--c-line)}
+.dlg header h2{margin:0;font-size:15px;margin-right:auto}
+.dlg .tabs{display:flex;gap:5px;padding:11px 15px 0;flex-wrap:wrap}
+.dlg .note{padding:9px 15px 0;margin:0;color:var(--c-ink2);font-size:12.5px;max-width:76ch;line-height:1.5}
+.dlg pre{margin:11px 15px;padding:11px;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:8px;overflow:auto;font:11.5px/1.5 var(--c-mono);white-space:pre;flex:1;min-height:200px}
+.dlg footer{display:flex;gap:8px;padding:11px 15px;border-top:1px solid var(--c-line);justify-content:flex-end;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--c-acc);color:var(--c-acc-ink);padding:8px 15px;border-radius:8px;font-size:13px;box-shadow:var(--c-shadow);z-index:60}
+
+@media (max-width:1180px){
+  .split{grid-template-columns:var(--c-side) minmax(0,1fr)}
+  .rail{position:fixed;top:0;right:0;bottom:0;width:min(330px,100%);z-index:40;box-shadow:var(--c-shadow)}
+  .rail:not(.open){display:none}
+  .only-narrow{display:inline-flex}
 }
-.lab-bar__inner {
-  max-width: 1240px; margin: 0 auto; padding: 12px 16px;
-  display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px;
+/* Narrow phones: the uppercase control labels are the last thing worth the width. */
+@media (max-width:460px){
+  .ctl>span:not(.sr){display:none}
+  .bar{gap:8px;padding:9px 10px}
+  #q{width:100%!important;order:9}
 }
-.lab-brand { font-weight: 700; font-size: 1.125rem; letter-spacing: -0.01em; margin-right: auto; display: flex; align-items: baseline; gap: 8px; }
-.lab-brand small { font-weight: 500; font-size: 0.75rem; color: var(--es-text-tertiary); }
-.lab-ctl { display: flex; align-items: center; gap: 8px; max-width: 100%; min-width: 0; }
-.lab-ctl .lab-seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
-.lab-ctl > span { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em; color: var(--es-text-tertiary); text-transform: uppercase; }
-
-.lab-seg { display: inline-flex; border: 1px solid var(--es-neutral-strong); border-radius: 8px; overflow: hidden; background: var(--es-base-surface); }
-.lab-seg button {
-  flex: none; white-space: nowrap;
-  border: 0; background: transparent; padding: 6px 12px; cursor: pointer; font-size: 0.8125rem; font-weight: 500;
-  border-right: 1px solid var(--es-neutral-strong);
+@media (max-width:860px){
+  .split{grid-template-columns:minmax(0,1fr)}
+  .side{position:fixed;top:0;left:0;bottom:0;width:min(280px,86%);z-index:41;box-shadow:var(--c-shadow)}
+  .side:not(.open){display:none}
+  .canvas{padding:12px}
+  .quads{grid-template-columns:1fr}
+  .prop{grid-template-columns:auto minmax(0,1fr);row-gap:4px}
+  .prop>label{grid-column:1/-1}
 }
-.lab-seg button:last-child { border-right: 0; }
-.lab-seg button:hover { background: var(--es-base-surface-hover); }
-.lab-seg button[aria-pressed="true"] { background: var(--es-primary-bg); color: var(--es-primary-text-inverted); }
-
-.lab-input, .lab-select {
-  border: 1px solid var(--es-neutral-strong); border-radius: 8px; background: var(--es-base-surface);
-  padding: 6px 10px; font-size: 0.8125rem;
-}
-.lab-input { min-width: 180px; }
-
-/* ---------- page ---------- */
-.lab-main { max-width: 1240px; margin: 0 auto; padding: 8px 16px 64px; }
-.lab-nav { display: flex; gap: 8px; overflow-x: auto; padding: 16px 0 8px; scrollbar-width: thin; }
-.lab-nav a {
-  flex: none; text-decoration: none; font-size: 0.8125rem; font-weight: 500; color: var(--es-text-secondary);
-  padding: 4px 12px; border-radius: 9999px; background: var(--es-base-surface); border: 1px solid var(--es-neutral-strong);
-}
-.lab-nav a:hover { background: var(--es-primary-surface); }
-
-.lab-card {
-  background: var(--es-base-surface); border: 1px solid var(--es-neutral-strong);
-  border-radius: 12px; padding: 20px; margin: 20px 0;
-  scroll-margin-top: 84px;
-}
-.lab-card__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px; }
-.lab-card h2 { margin: 0; font-size: 1.25rem; line-height: 1.25; letter-spacing: -0.01em; }
-.lab-level { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; }
-.lab-level[data-level="atom"] { background: var(--es-secondary-soft); color: var(--es-secondary-text); }
-.lab-level[data-level="molecule"] { background: var(--es-primary-soft); color: var(--es-primary-text); }
-.lab-level[data-level="organism"] { background: var(--es-warning-soft); color: var(--es-warning-text); }
-.lab-class { font-size: 0.8125rem; color: var(--es-text-tertiary); }
-.lab-summary { margin: 6px 0 10px; color: var(--es-text-secondary); }
-.lab-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; font-size: 0.75rem; }
-.lab-chip { padding: 2px 8px; border-radius: 4px; background: var(--es-neutral-surface); color: var(--es-neutral-text); }
-.lab-chip--uses { background: transparent; border: 1px dashed var(--es-neutral-strong); }
-
-.lab-controls { display: flex; flex-wrap: wrap; gap: 10px 18px; padding: 12px 0; border-top: 1px solid var(--es-neutral-surface); }
-.lab-axis { display: flex; align-items: center; gap: 8px; max-width: 100%; min-width: 0; }
-.lab-axis .lab-seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
-.lab-axis > label, .lab-axis > span { font-size: 0.75rem; font-weight: 600; color: var(--es-text-tertiary); }
-
-.lab-stage { background: var(--es-base-bg); border-radius: 8px; padding: 12px 16px; overflow-x: auto; }
-.lab-row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px 16px; padding: 12px 0; }
-.lab-row + .lab-row { border-top: 1px dashed var(--es-neutral-strong); }
-.lab-rowlabel { flex: 0 0 100%; font-size: 0.75rem; font-weight: 600; color: var(--es-text-tertiary); }
-.lab-cell { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.lab-cell figcaption { font-size: 0.6875rem; color: var(--es-text-tertiary); }
-
-.lab-card details { margin-top: 12px; }
-.lab-card summary { cursor: pointer; font-size: 0.8125rem; font-weight: 600; color: var(--es-text-secondary); }
-.lab-card pre {
-  margin: 8px 0 0; padding: 12px; overflow-x: auto; white-space: pre-wrap; word-break: break-word;
-  font-size: 0.75rem; line-height: 1.5; border-radius: 8px; background: var(--es-neutral-soft); color: var(--es-text-primary);
-}
-.lab-a11y { margin: 8px 0 0; font-size: 0.8125rem; color: var(--es-text-tertiary); }
-
-/* ---------- personality compare ---------- */
-.lab-compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
-@media (max-width: 640px) { .lab-compare { grid-template-columns: 1fr; } }
-.lab-quad { background: var(--es-base-bg); border: 1px solid var(--es-neutral-strong); border-radius: 8px; padding: 12px 16px; min-width: 0; overflow-x: auto; }
-.lab-quad h3 { margin: 0 0 4px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; color: var(--es-text-tertiary); text-transform: uppercase; }
-.lab-empty { padding: 48px 0; text-align: center; color: var(--es-text-tertiary); }
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 </style>
+<style id="live"></style>
 </head>
 <body>
-<div id="app"></div>
-<script>window.LAB = {"components":[{"name":"icon","class":"es-icon","level":"atom","summary":"A bare Lucide glyph drawn as a CSS mask. Takes currentColor. No container.","tags":["icon","glyph","svg","lucide","decorative"],"uses":[],"variants":{"size":["sm","md","lg"],"name":["arrow-left","arrow-right","building-2","calendar","check","chevron-down","chevron-left","chevron-right","chevron-up","circle-alert","circle-check","circle-x","clock","download","external-link","globe","heart","house","info","link","mail","map-pin","menu","message-circle","minus","phone","plus","quote","search","send","shield-check","star","triangle-alert","upload","user","users","x","zap"]},"defaults":{"size":"md","name":"mail"},"preview":"\u003cspan class=\"es-icon\" data-name=\"{name}\" data-size=\"{size}\" aria-hidden=\"true\">\u003c/span>","a11y":"Decorative by default: add aria-hidden=\"true\". If it carries meaning on its own, use role=\"img\" and aria-label. Never convey meaning by glyph alone."},{"name":"icon-box","class":"es-icon-box","level":"molecule","summary":"An Icon inside a styled container (fill, outline, soft or text) with size, radius and tone.","tags":["icon","container","badge","decorative","feature","avatar-like"],"uses":["icon"],"variants":{"style":["fill","outline","soft","text"],"size":["sm","md","lg"],"radius":["none","soft","full"],"tone":["primary","secondary","neutral","success","warning","error"]},"defaults":{"style":"fill","size":"md","radius":"soft","tone":"primary"},"preview":"\u003cspan class=\"es-icon-box\" data-style=\"{style}\" data-size=\"{size}\" data-radius=\"{radius}\" data-tone=\"{tone}\">\u003cspan class=\"es-icon\" data-name=\"mail\" aria-hidden=\"true\">\u003c/span>\u003c/span>","a11y":"Decorative by default; mark the inner icon aria-hidden. If the box alone carries meaning, give the box role=\"img\" and aria-label. Interactive version is IconButton (Faza 3), not this."},{"name":"contact-info","class":"es-contact-info","level":"organism","summary":"One contact line: icon container, small label, value (phone, email, address, hours).","tags":["contact","phone","email","address","footer","header","info","list-item"],"uses":["icon-box"],"variants":{"layout":["inline","stacked"],"size":["sm","md","lg"],"icon-radius":["none","soft","full"]},"defaults":{"layout":"inline","size":"md","icon-radius":"soft"},"preview":"\u003cdiv class=\"es-contact-info\" data-layout=\"{layout}\" data-size=\"{size}\" data-icon-radius=\"{icon-radius}\">\u003cspan class=\"es-icon-box\" data-style=\"soft\">\u003cspan class=\"es-icon\" data-name=\"phone\" aria-hidden=\"true\">\u003c/span>\u003c/span>\u003cdiv class=\"es-contact-info__body\">\u003cspan class=\"es-contact-info__label\">Call us\u003c/span>\u003ca class=\"es-contact-info__value\" href=\"tel:+37300000000\">+373 000 00 000\u003c/a>\u003c/div>\u003c/div>","a11y":"Icon is decorative (aria-hidden); the label and value carry the meaning. Make the value a real link for phone and email."}]};</script>
+<script>window.LAB = {"components":[{"name":"icon","class":"es-icon","category":"media","level":"atom","summary":"A bare Lucide glyph drawn as a CSS mask. Takes currentColor. No container.","tags":["icon","glyph","svg","lucide","decorative"],"uses":[],"slots":[],"variants":{"size":["sm","md","lg"],"name":["arrow-left","arrow-right","building-2","calendar","check","chevron-down","chevron-left","chevron-right","chevron-up","circle-alert","circle-check","circle-x","clock","download","external-link","globe","heart","house","info","link","mail","map-pin","menu","message-circle","minus","phone","plus","quote","search","send","shield-check","star","triangle-alert","upload","user","users","x","zap"]},"defaults":{"size":"md","name":"mail"},"preview":"\u003cspan class=\"es-icon\" data-name=\"{name}\" data-size=\"{size}\" aria-hidden=\"true\">\u003c/span>","a11y":"Decorative by default: add aria-hidden=\"true\". If it carries meaning on its own, use role=\"img\" and aria-label. Never convey meaning by glyph alone."},{"name":"icon-box","class":"es-icon-box","category":"media","level":"molecule","summary":"An Icon inside a styled container (fill, outline, soft or text) with size, radius and tone.","tags":["icon","container","badge","decorative","feature","avatar-like"],"uses":["icon"],"slots":["default: one .es-icon"],"variants":{"style":["fill","outline","soft","text"],"size":["sm","md","lg"],"radius":["none","soft","full"],"tone":["primary","secondary","neutral","success","warning","error"]},"defaults":{"style":"fill","size":"md","radius":"soft","tone":"primary"},"preview":"\u003cspan class=\"es-icon-box\" data-style=\"{style}\" data-size=\"{size}\" data-radius=\"{radius}\" data-tone=\"{tone}\">\u003cspan class=\"es-icon\" data-name=\"mail\" aria-hidden=\"true\">\u003c/span>\u003c/span>","a11y":"Decorative by default; mark the inner icon aria-hidden. If the box alone carries meaning, give the box role=\"img\" and aria-label. Interactive version is IconButton (Faza 3), not this."},{"name":"contact-info","class":"es-contact-info","category":"content","level":"organism","summary":"One contact line: icon container, small label, value (phone, email, address, hours).","tags":["contact","phone","email","address","footer","header","info","list-item"],"uses":["icon-box"],"slots":["icon: one .es-icon-box","label: .es-contact-info__label","value: .es-contact-info__value (use \u003ca href=\"tel:\"> / mailto: when actionable)"],"variants":{"layout":["inline","stacked"],"size":["sm","md","lg"],"icon-radius":["none","soft","full"]},"defaults":{"layout":"inline","size":"md","icon-radius":"soft"},"preview":"\u003cdiv class=\"es-contact-info\" data-layout=\"{layout}\" data-size=\"{size}\" data-icon-radius=\"{icon-radius}\">\u003cspan class=\"es-icon-box\" data-style=\"soft\">\u003cspan class=\"es-icon\" data-name=\"phone\" aria-hidden=\"true\">\u003c/span>\u003c/span>\u003cdiv class=\"es-contact-info__body\">\u003cspan class=\"es-contact-info__label\">Call us\u003c/span>\u003ca class=\"es-contact-info__value\" href=\"tel:+37300000000\">+373 000 00 000\u003c/a>\u003c/div>\u003c/div>","a11y":"Icon is decorative (aria-hidden); the label and value carry the meaning. Make the value a real link for phone and email."}],"patterns":[],"categories":[{"id":"actions","label":"Actions","note":"Buttons, links, anything that triggers something"},{"id":"forms","label":"Forms & input","note":"Fields, choices, pickers, form layout"},{"id":"media","label":"Images & icons","note":"Icons, avatars, images, logos"},{"id":"content","label":"Content","note":"Cards, posts, products, quotes, lists, contact blocks"},{"id":"feedback","label":"Feedback & status","note":"Alerts, notices, toasts, badges, tags, progress"},{"id":"navigation","label":"Navigation","note":"Menus, tabs, breadcrumbs, pagination, sliders"},{"id":"overlays","label":"Overlays","note":"Modals, drawers, dropdowns, tooltips, popovers"},{"id":"layout","label":"Layout","note":"Grid, stack, section, container, divider"},{"id":"data","label":"Data display","note":"Tables, stats, counters"}],"tokens":{"theme":{"name":"Enspire Default","file":"enspire-default"},"palette":{"naviblue.50":"#EBF0FA","naviblue.100":"#D4E0F5","naviblue.200":"#A8C0EB","naviblue.300":"#7A9FDB","naviblue.400":"#4D7EC9","naviblue.500":"#2B5BA8","naviblue.600":"#1C3D6E","naviblue.700":"#163261","naviblue.800":"#102754","naviblue.900":"#0A1C3D","naviblue.d100":"#B8D0F5","naviblue.d200":"#93B8F0","naviblue.d300":"#7AA8E8","naviblue.d400":"#5A8FE0","naviblue.d500":"#4A7FD4","naviblue.d600":"#3A6FC4","naviblue.d800":"#162D58","naviblue.d900":"#0D1E3D","verdant.50":"#E3F6F1","verdant.100":"#C1EDE3","verdant.200":"#83DBC7","verdant.300":"#44C8AB","verdant.400":"#27B38E","verdant.500":"#1E8A6E","verdant.600":"#196A55","verdant.700":"#145040","verdant.800":"#0F382D","verdant.900":"#0A2220","verdant.d200":"#7DE0C4","verdant.d300":"#33C9A2","verdant.d500":"#1E9678","verdant.d900":"#0F3028","green.50":"#DCFCE7","green.100":"#BBF7D0","green.200":"#86EFAC","green.300":"#34D468","green.400":"#22C55E","green.500":"#16A34A","green.600":"#15803D","green.700":"#166534","green.800":"#14532D","green.900":"#052E16","amber.50":"#FEF3C7","amber.100":"#FDE68A","amber.200":"#FCD34D","amber.300":"#FBB034","amber.400":"#F59E0B","amber.500":"#D97706","amber.600":"#B45309","amber.700":"#92400E","amber.800":"#78350F","amber.900":"#451A03","red.50":"#FEE2E2","red.100":"#FECACA","red.200":"#FCA5A5","red.300":"#F87171","red.400":"#EF4444","red.500":"#DC2626","red.600":"#B91C1C","red.700":"#991B1B","red.800":"#7F1D1D","red.900":"#450A0A","slate.50":"#F1F5F9","slate.100":"#E2E8F0","slate.200":"#CBD5E1","slate.300":"#94A3B8","slate.500":"#64748B","slate.600":"#475569","slate.700":"#334155","slate.800":"#1E293B","slate.900":"#0F172A","canvas.0":"#FFFFFF","canvas.50":"#F4F6F9","canvas.100":"#EEF1F6","canvas.200":"#E4E9F2","canvas.800":"#1C2D40","canvas.850":"#162436","canvas.900":"#0F1B2D","canvas.950":"#0A1220","ink.0":"#FFFFFF","ink.100":"#B4C0CC","ink.200":"#8799AE","ink.300":"#546880","ink.900":"#0E1C2F","ink.d50":"#E8EDF5","ink.d200":"#8099B8","ink.d300":"#566880","ink.d400":"#3A4A5C","violet.500":"#5E3FA3","violet.d300":"#A98ADA","alpha.hover":"#1C3D6E0F","alpha.active":"#1C3D6E1F","alpha.disabled":"#00000033","alpha.d-hover":"#4A7FD41A","alpha.d-active":"#4A7FD433","alpha.d-disabled":"#FFFFFF1A"},"ramps":{"naviblue":{"stops":["50","100","200","300","400","500","600","700","800","900","d100","d200","d300","d400","d500","d600","d800","d900"],"anchor":"600","label":"Primary brand"},"verdant":{"stops":["50","100","200","300","400","500","600","700","800","900","d200","d300","d500","d900"],"anchor":"500","label":"Secondary brand"},"green":{"stops":["50","100","200","300","400","500","600","700","800","900"],"anchor":"500","label":"Success"},"amber":{"stops":["50","100","200","300","400","500","600","700","800","900"],"anchor":"500","label":"Warning"},"red":{"stops":["50","100","200","300","400","500","600","700","800","900"],"anchor":"500","label":"Error"},"slate":{"stops":["50","100","200","300","500","600","700","800","900"],"anchor":"500","label":"Neutral"},"canvas":{"stops":["0","50","100","200","800","850","900","950"],"anchor":"50","label":"Surfaces"},"ink":{"stops":["0","100","200","300","900","d50","d200","d300","d400"],"anchor":"900","label":"Text"},"violet":{"stops":["500","d300"],"anchor":null,"label":"violet"},"alpha":{"stops":["hover","active","disabled","d-hover","d-active","d-disabled"],"anchor":null,"label":"alpha"}},"semantic":{"--es-base-bg":{"light":"canvas.50","dark":"canvas.950","use":"Main site background"},"--es-base-surface":{"light":"canvas.0","dark":"canvas.900","use":"Cards, containers, panels"},"--es-base-surface-hover":{"light":"canvas.100","dark":"canvas.850","use":""},"--es-base-surface-active":{"light":"canvas.200","dark":"canvas.800","use":""},"--es-base-elevated":{"light":"canvas.0","dark":"canvas.800","use":"Modals, dropdowns, overlays"},"--es-text-primary":{"light":"ink.900","dark":"ink.d50","use":""},"--es-text-secondary":{"light":"naviblue.600","dark":"naviblue.d200","use":"Headings, labels"},"--es-text-tertiary":{"light":"ink.300","dark":"ink.d200","use":"Metadata, low emphasis"},"--es-text-muted":{"light":"ink.200","dark":"ink.d300","use":"Hints and placeholders ONLY — below AA"},"--es-text-disabled":{"light":"ink.100","dark":"ink.d400","use":""},"--es-text-inverted":{"light":"ink.0","dark":"canvas.950","use":"Text on colored fills"},"--es-text-heading":{"light":"ink.900","dark":"ink.d50","use":""},"--es-link":{"light":"naviblue.500","dark":"naviblue.d300","use":""},"--es-link-hover":{"light":"naviblue.600","dark":"naviblue.d200","use":""},"--es-link-active":{"light":"naviblue.800","dark":"naviblue.d100","use":""},"--es-link-visited":{"light":"violet.500","dark":"violet.d300","use":""},"--es-link-disabled":{"light":"ink.100","dark":"ink.d400","use":""},"--es-primary-bg":{"light":"naviblue.600","dark":"naviblue.d500","use":""},"--es-primary-bg-hover":{"light":"naviblue.700","dark":"naviblue.d400","use":""},"--es-primary-bg-active":{"light":"naviblue.800","dark":"naviblue.d600","use":""},"--es-primary-text":{"light":"naviblue.600","dark":"naviblue.d200","use":""},"--es-primary-text-inverted":{"light":"ink.0","dark":"naviblue.900","use":""},"--es-primary-soft":{"light":"naviblue.50","dark":"naviblue.d900","use":""},"--es-primary-surface":{"light":"naviblue.100","dark":"naviblue.d800","use":""},"--es-primary-strong":{"light":"naviblue.500","dark":"naviblue.d500","use":""},"--es-secondary-bg":{"light":"verdant.500","dark":"verdant.400","use":""},"--es-secondary-bg-hover":{"light":"verdant.600","dark":"verdant.d300","use":""},"--es-secondary-bg-active":{"light":"verdant.700","dark":"verdant.d500","use":""},"--es-secondary-text":{"light":"verdant.600","dark":"verdant.d200","use":""},"--es-secondary-text-inverted":{"light":"ink.0","dark":"verdant.900","use":""},"--es-secondary-soft":{"light":"verdant.50","dark":"verdant.900","use":""},"--es-secondary-surface":{"light":"verdant.100","dark":"verdant.d900","use":""},"--es-secondary-strong":{"light":"verdant.400","dark":"verdant.400","use":""},"--es-success-bg":{"light":"green.500","dark":"green.400","use":""},"--es-success-bg-hover":{"light":"green.600","dark":"green.300","use":""},"--es-success-bg-active":{"light":"green.700","dark":"green.500","use":""},"--es-success-text":{"light":"green.600","dark":"green.200","use":""},"--es-success-text-inverted":{"light":"ink.0","dark":"green.900","use":""},"--es-success-soft":{"light":"green.50","dark":"green.900","use":""},"--es-success-surface":{"light":"green.100","dark":"green.800","use":""},"--es-success-strong":{"light":"green.400","dark":"green.400","use":""},"--es-warning-bg":{"light":"amber.500","dark":"amber.400","use":""},"--es-warning-bg-hover":{"light":"amber.600","dark":"amber.300","use":""},"--es-warning-bg-active":{"light":"amber.700","dark":"amber.500","use":""},"--es-warning-text":{"light":"amber.600","dark":"amber.200","use":""},"--es-warning-text-inverted":{"light":"ink.0","dark":"amber.900","use":""},"--es-warning-soft":{"light":"amber.50","dark":"amber.900","use":""},"--es-warning-surface":{"light":"amber.100","dark":"amber.800","use":""},"--es-warning-strong":{"light":"amber.400","dark":"amber.400","use":""},"--es-error-bg":{"light":"red.500","dark":"red.400","use":""},"--es-error-bg-hover":{"light":"red.600","dark":"red.300","use":""},"--es-error-bg-active":{"light":"red.700","dark":"red.500","use":""},"--es-error-text":{"light":"red.600","dark":"red.200","use":""},"--es-error-text-inverted":{"light":"ink.0","dark":"red.900","use":""},"--es-error-soft":{"light":"red.50","dark":"red.900","use":""},"--es-error-surface":{"light":"red.100","dark":"red.800","use":""},"--es-error-strong":{"light":"red.400","dark":"red.400","use":""},"--es-neutral-bg":{"light":"slate.500","dark":"slate.300","use":""},"--es-neutral-text":{"light":"slate.600","dark":"slate.200","use":""},"--es-neutral-soft":{"light":"slate.50","dark":"slate.900","use":""},"--es-neutral-surface":{"light":"slate.100","dark":"slate.800","use":""},"--es-neutral-strong":{"light":"slate.200","dark":"slate.700","use":"Default control border"},"--es-state-hover":{"light":"alpha.hover","dark":"alpha.d-hover","use":""},"--es-state-active":{"light":"alpha.active","dark":"alpha.d-active","use":""},"--es-state-focus":{"light":"naviblue.500","dark":"naviblue.d500","use":"Focus ring: 2px, offset 2px, radius +2px"},"--es-state-disabled":{"light":"alpha.disabled","dark":"alpha.d-disabled","use":""}},"scales":{"--es-space-0":{"group":"space","value":"0px","scale":"density","use":""},"--es-space-025":{"group":"space","value":"2px","scale":"density","use":""},"--es-space-050":{"group":"space","value":"4px","scale":"density","use":""},"--es-space-075":{"group":"space","value":"6px","scale":"density","use":""},"--es-space-100":{"group":"space","value":"8px","scale":"density","use":""},"--es-space-150":{"group":"space","value":"12px","scale":"density","use":""},"--es-space-200":{"group":"space","value":"16px","scale":"density","use":""},"--es-space-250":{"group":"space","value":"20px","scale":"density","use":""},"--es-space-300":{"group":"space","value":"24px","scale":"density","use":""},"--es-space-400":{"group":"space","value":"32px","scale":"density","use":""},"--es-space-500":{"group":"space","value":"40px","scale":"density","use":""},"--es-space-600":{"group":"space","value":"48px","scale":"density","use":""},"--es-space-800":{"group":"space","value":"64px","scale":"density","use":""},"--es-space-1000":{"group":"space","value":"80px","scale":"density","use":""},"--es-space-negative-025":{"group":"space-negative","value":"-2px","scale":"density","use":""},"--es-space-negative-050":{"group":"space-negative","value":"-4px","scale":"density","use":""},"--es-space-negative-100":{"group":"space-negative","value":"-8px","scale":"density","use":""},"--es-space-negative-150":{"group":"space-negative","value":"-12px","scale":"density","use":""},"--es-space-negative-200":{"group":"space-negative","value":"-16px","scale":"density","use":""},"--es-space-negative-300":{"group":"space-negative","value":"-24px","scale":"density","use":""},"--es-space-negative-400":{"group":"space-negative","value":"-32px","scale":"density","use":""},"--es-radius-xsmall":{"group":"radius","value":"2px","scale":"radius","use":"Badges, checkboxes, avatar labels, keyboard shortcuts"},"--es-radius-small":{"group":"radius","value":"4px","scale":"radius","use":"Labels, lozenges, tags, timestamps, tooltips, compact buttons"},"--es-radius-medium":{"group":"radius","value":"8px","scale":"radius","use":"Buttons, inputs, textareas, selects, navigation items"},"--es-radius-large":{"group":"radius","value":"12px","scale":"radius","use":"Cards, in-page containers, floating UI, dropdown menus"},"--es-radius-xlarge":{"group":"radius","value":"16px","scale":"radius","use":"Full-page containers, modal dialogs, kanban columns, tables"},"--es-radius-xxlarge":{"group":"radius","value":"24px","scale":"radius","use":"Video players"},"--es-radius-full":{"group":"radius","value":"9999px","scale":"none","use":"Pills and circles ONLY. Never rectangular containers."},"--es-border-width-thin":{"group":"border-width","value":"1px","scale":null,"use":""},"--es-border-width-medium":{"group":"border-width","value":"2px","scale":null,"use":""},"--es-border-width-thick":{"group":"border-width","value":"4px","scale":null,"use":""},"--es-text-size-xs":{"group":"text-size","value":"0.75rem","scale":null,"use":"Captions, metadata"},"--es-text-size-sm":{"group":"text-size","value":"0.875rem","scale":null,"use":"Small UI text"},"--es-text-size-md":{"group":"text-size","value":"1rem","scale":null,"use":"Body text (default)"},"--es-text-size-lg":{"group":"text-size","value":"1.125rem","scale":null,"use":"Emphasized paragraphs"},"--es-text-size-xl":{"group":"text-size","value":"1.25rem","scale":null,"use":"Intro / highlight text"},"--es-heading-size-xs":{"group":"heading-size","value":"1.125rem","scale":null,"use":"Small section headers"},"--es-heading-size-sm":{"group":"heading-size","value":"1.25rem","scale":null,"use":"Card titles"},"--es-heading-size-md":{"group":"heading-size","value":"1.5rem","scale":null,"use":"Section titles"},"--es-heading-size-lg":{"group":"heading-size","value":"2rem","scale":null,"use":"Page titles"},"--es-heading-size-xl":{"group":"heading-size","value":"3rem","scale":null,"use":"Hero / marketing headers"},"--es-weight-light":{"group":"weight","value":"300","scale":null,"use":"Hero subtitles and large pull quotes only. Never below 16px."},"--es-weight-regular":{"group":"weight","value":"400","scale":null,"use":""},"--es-weight-medium":{"group":"weight","value":"500","scale":null,"use":""},"--es-weight-semibold":{"group":"weight","value":"600","scale":null,"use":""},"--es-weight-bold":{"group":"weight","value":"700","scale":null,"use":""},"--es-weight-extrabold":{"group":"weight","value":"800","scale":null,"use":""},"--es-text-leading-tight":{"group":"text-leading","value":"1.25","scale":null,"use":"Dense UI, single-line labels"},"--es-text-leading-normal":{"group":"text-leading","value":"1.5","scale":null,"use":"Body"},"--es-text-leading-relaxed":{"group":"text-leading","value":"1.75","scale":null,"use":"Long-form prose"},"--es-heading-leading-tight":{"group":"heading-leading","value":"1.1","scale":null,"use":"Display / hero"},"--es-heading-leading-normal":{"group":"heading-leading","value":"1.25","scale":null,"use":"Section headings"},"--es-heading-leading-relaxed":{"group":"heading-leading","value":"1.4","scale":null,"use":"Card titles, smaller headings"},"--es-text-tracking-tight":{"group":"text-tracking","value":"-0.01em","scale":null,"use":"Dense UI, table cells"},"--es-text-tracking-normal":{"group":"text-tracking","value":"0em","scale":null,"use":""},"--es-text-tracking-wide":{"group":"text-tracking","value":"0.02em","scale":null,"use":"Labels, captions"},"--es-text-tracking-widest":{"group":"text-tracking","value":"0.05em","scale":null,"use":"ALL-CAPS badges only"},"--es-heading-tracking-tight":{"group":"heading-tracking","value":"-0.02em","scale":null,"use":"Hero"},"--es-heading-tracking-normal":{"group":"heading-tracking","value":"-0.01em","scale":null,"use":"H1-H2"},"--es-heading-tracking-relaxed":{"group":"heading-tracking","value":"0em","scale":null,"use":"H3-H4"}},"typeface":{"text":"system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif","heading":"system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"},"personality":{"density":1,"radiusScale":1}},"themeFile":{"$name":"Enspire Default","$description":"Default theme: brand palettes + personality knobs. This file IS the primitive layer — raw hex is legal here and ONLY here. To make a new project theme, copy this file and change the values. Never change the key names.","$convention":"Plain stops (50-900) are light-mode values; d-prefixed stops (d100-d900) are dark-mode-specific values. Lower number = lighter. A value used by both modes needs no d-stop.","personality":{"density":{"$type":"number","$value":1,"$description":"Multiplies every space.* token. compact: 0.75 · default: 1 · comfortable: 1.25"},"radiusScale":{"$type":"number","$value":1,"$description":"Multiplies every radius.* token except full. sharp: 0 · soft: 1 · round: 2"}},"palette":{"naviblue":{"50":{"$type":"color","$value":"#EBF0FA"},"100":{"$type":"color","$value":"#D4E0F5"},"200":{"$type":"color","$value":"#A8C0EB"},"300":{"$type":"color","$value":"#7A9FDB"},"400":{"$type":"color","$value":"#4D7EC9"},"500":{"$type":"color","$value":"#2B5BA8"},"600":{"$type":"color","$value":"#1C3D6E"},"700":{"$type":"color","$value":"#163261"},"800":{"$type":"color","$value":"#102754"},"900":{"$type":"color","$value":"#0A1C3D"},"$anchor":"600","$label":"Primary brand","$description":"Primary brand ramp.","d100":{"$type":"color","$value":"#B8D0F5"},"d200":{"$type":"color","$value":"#93B8F0"},"d300":{"$type":"color","$value":"#7AA8E8"},"d400":{"$type":"color","$value":"#5A8FE0"},"d500":{"$type":"color","$value":"#4A7FD4"},"d600":{"$type":"color","$value":"#3A6FC4"},"d800":{"$type":"color","$value":"#162D58"},"d900":{"$type":"color","$value":"#0D1E3D"}},"verdant":{"50":{"$type":"color","$value":"#E3F6F1"},"100":{"$type":"color","$value":"#C1EDE3"},"200":{"$type":"color","$value":"#83DBC7"},"300":{"$type":"color","$value":"#44C8AB"},"400":{"$type":"color","$value":"#27B38E"},"500":{"$type":"color","$value":"#1E8A6E"},"600":{"$type":"color","$value":"#196A55"},"700":{"$type":"color","$value":"#145040"},"800":{"$type":"color","$value":"#0F382D"},"900":{"$type":"color","$value":"#0A2220"},"$anchor":"500","$label":"Secondary brand","$description":"Secondary brand ramp (teal-emerald).","d200":{"$type":"color","$value":"#7DE0C4"},"d300":{"$type":"color","$value":"#33C9A2"},"d500":{"$type":"color","$value":"#1E9678"},"d900":{"$type":"color","$value":"#0F3028"}},"green":{"50":{"$type":"color","$value":"#DCFCE7"},"100":{"$type":"color","$value":"#BBF7D0"},"200":{"$type":"color","$value":"#86EFAC"},"300":{"$type":"color","$value":"#34D468"},"400":{"$type":"color","$value":"#22C55E"},"500":{"$type":"color","$value":"#16A34A"},"600":{"$type":"color","$value":"#15803D"},"700":{"$type":"color","$value":"#166534"},"800":{"$type":"color","$value":"#14532D"},"900":{"$type":"color","$value":"#052E16"},"$anchor":"500","$label":"Success","$description":"Success. Deliberately brighter and more yellow than verdant, so positive feedback is never confused with the secondary brand color."},"amber":{"50":{"$type":"color","$value":"#FEF3C7"},"100":{"$type":"color","$value":"#FDE68A"},"200":{"$type":"color","$value":"#FCD34D"},"300":{"$type":"color","$value":"#FBB034"},"400":{"$type":"color","$value":"#F59E0B"},"500":{"$type":"color","$value":"#D97706"},"600":{"$type":"color","$value":"#B45309"},"700":{"$type":"color","$value":"#92400E"},"800":{"$type":"color","$value":"#78350F"},"900":{"$type":"color","$value":"#451A03"},"$anchor":"500","$label":"Warning","$description":"Warning."},"red":{"50":{"$type":"color","$value":"#FEE2E2"},"100":{"$type":"color","$value":"#FECACA"},"200":{"$type":"color","$value":"#FCA5A5"},"300":{"$type":"color","$value":"#F87171"},"400":{"$type":"color","$value":"#EF4444"},"500":{"$type":"color","$value":"#DC2626"},"600":{"$type":"color","$value":"#B91C1C"},"700":{"$type":"color","$value":"#991B1B"},"800":{"$type":"color","$value":"#7F1D1D"},"900":{"$type":"color","$value":"#450A0A"},"$anchor":"500","$label":"Error","$description":"Error."},"slate":{"50":{"$type":"color","$value":"#F1F5F9"},"100":{"$type":"color","$value":"#E2E8F0"},"200":{"$type":"color","$value":"#CBD5E1"},"300":{"$type":"color","$value":"#94A3B8"},"500":{"$type":"color","$value":"#64748B"},"600":{"$type":"color","$value":"#475569"},"700":{"$type":"color","$value":"#334155"},"800":{"$type":"color","$value":"#1E293B"},"900":{"$type":"color","$value":"#0F172A"},"$anchor":"500","$label":"Neutral","$description":"Neutral UI ramp."},"canvas":{"0":{"$type":"color","$value":"#FFFFFF"},"50":{"$type":"color","$value":"#F4F6F9"},"100":{"$type":"color","$value":"#EEF1F6"},"200":{"$type":"color","$value":"#E4E9F2"},"800":{"$type":"color","$value":"#1C2D40"},"850":{"$type":"color","$value":"#162436"},"900":{"$type":"color","$value":"#0F1B2D"},"950":{"$type":"color","$value":"#0A1220"},"$anchor":"50","$label":"Surfaces","$description":"Page and surface backgrounds. 0 = white, 950 = darkest."},"ink":{"0":{"$type":"color","$value":"#FFFFFF"},"100":{"$type":"color","$value":"#B4C0CC"},"200":{"$type":"color","$value":"#8799AE"},"300":{"$type":"color","$value":"#546880"},"900":{"$type":"color","$value":"#0E1C2F"},"$anchor":"900","$label":"Text","$description":"Text colors. Plain stops for light mode, d-stops for dark.","d50":{"$type":"color","$value":"#E8EDF5"},"d200":{"$type":"color","$value":"#8099B8"},"d300":{"$type":"color","$value":"#566880"},"d400":{"$type":"color","$value":"#3A4A5C"}},"violet":{"500":{"$type":"color","$value":"#5E3FA3"},"$description":"Visited links only.","d300":{"$type":"color","$value":"#A98ADA"}},"alpha":{"$description":"Transparent overlays for interaction states.","hover":{"$type":"color","$value":"#1C3D6E0F"},"active":{"$type":"color","$value":"#1C3D6E1F"},"disabled":{"$type":"color","$value":"#00000033"},"d-hover":{"$type":"color","$value":"#4A7FD41A"},"d-active":{"$type":"color","$value":"#4A7FD433"},"d-disabled":{"$type":"color","$value":"#FFFFFF1A"}}},"typeface":{"$description":"Font stacks. Core exposes them as --es-font-text / --es-font-heading.","text":{"$type":"fontFamily","$value":"system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"},"heading":{"$type":"fontFamily","$value":"system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"}}}};</script>
 <script>
-/* Enspire Lab — vanilla JS, no dependencies. Reads window.LAB (built from every meta.json). */
+/* Enspire Lab — vanilla JS, no dependencies. Reads window.LAB (built by tools/lab.js from the repo).
+   Three jobs: browse components by category, exercise every variant, and retune tokens live and export
+   the result as a theme file. Nothing here is hand-authored per component — add a meta.json and it appears. */
 (() => {
-  const DATA = window.LAB;
-  const byName = Object.fromEntries(DATA.components.map((c) => [c.name, c]));
+const D = window.LAB, T = D.tokens;
+const byName = Object.fromEntries(D.components.map(c => [c.name, c]));
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+const store = {
+  get(k, d){ try { const v = localStorage.getItem('es-lab-' + k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem('es-lab-' + k, JSON.stringify(v)); } catch(e){} },
+};
 
-  // ---- tiny helpers ----
-  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const store = {
-    get: (k, d) => { try { return localStorage.getItem('es-lab-' + k) || d; } catch (e) { return d; } },
-    set: (k, v) => { try { localStorage.setItem('es-lab-' + k, v); } catch (e) { /* storage is a convenience only */ } },
+/* ================= colour maths (OKLCH) =================
+   Lets one anchor colour regenerate a whole ramp: every stop keeps its relative lightness and
+   chroma, so a 10-stop scale stays a scale instead of 10 unrelated colours. */
+function parseHex(h){
+  h = String(h).trim().replace('#','');
+  if (h.length === 3 || h.length === 4) h = h.split('').map(c => c + c).join('');
+  if (!/^[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(h)) return null;
+  return { r:parseInt(h.slice(0,2),16)/255, g:parseInt(h.slice(2,4),16)/255, b:parseInt(h.slice(4,6),16)/255,
+           ah: h.length === 8 ? h.slice(6,8).toUpperCase() : '' };
+}
+const toLin = c => c <= 0.04045 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4);
+const toGam = c => c <= 0.0031308 ? 12.92*c : 1.055*Math.pow(c, 1/2.4) - 0.055;
+function rgbToOklch(c){
+  const r = toLin(c.r), g = toLin(c.g), b = toLin(c.b);
+  const l = Math.cbrt(0.4122214708*r + 0.5363325363*g + 0.0514459929*b);
+  const m = Math.cbrt(0.2119034982*r + 0.6806995451*g + 0.1073969566*b);
+  const s = Math.cbrt(0.0883024619*r + 0.2817188376*g + 0.6299787005*b);
+  const L = 0.2104542553*l + 0.7936177850*m - 0.0040720468*s;
+  const A = 1.9779984951*l - 2.4285922050*m + 0.4505937099*s;
+  const B = 0.0259040371*l + 0.7827717662*m - 0.8086757660*s;
+  let H = Math.atan2(B, A) * 180 / Math.PI; if (H < 0) H += 360;
+  return { L, C: Math.hypot(A, B), H };
+}
+function oklchToLin(L, C, H){
+  const h = H * Math.PI/180, a = C*Math.cos(h), b = C*Math.sin(h);
+  const l = Math.pow(L + 0.3963377774*a + 0.2158037573*b, 3);
+  const m = Math.pow(L - 0.1055613458*a - 0.0638541728*b, 3);
+  const s = Math.pow(L - 0.0894841775*a - 1.2914855480*b, 3);
+  return [4.0767416621*l - 3.3077115913*m + 0.2309699292*s,
+         -1.2684380046*l + 2.6097574011*m - 0.3413193965*s,
+         -0.0041960863*l - 0.7034186147*m + 1.7076147010*s];
+}
+const inGamut = rgb => rgb.every(v => v >= -1e-4 && v <= 1 + 1e-4);
+function oklchToHex(L, C, H, ah=''){
+  L = Math.min(1, Math.max(0, L)); C = Math.max(0, C);
+  let rgb = oklchToLin(L, C, H);
+  if (!inGamut(rgb)){ // walk chroma down until it fits sRGB, keeping lightness and hue
+    let lo = 0, hi = C;
+    for (let i = 0; i < 24; i++){ const mid = (lo+hi)/2; if (inGamut(oklchToLin(L, mid, H))) lo = mid; else hi = mid; }
+    rgb = oklchToLin(L, lo, H);
+  }
+  return '#' + rgb.map(v => Math.round(Math.min(1, Math.max(0, toGam(Math.max(0, v))))*255).toString(16).padStart(2,'0')).join('').toUpperCase() + ah;
+}
+const lum = hex => { const c = parseHex(hex); return c ? 0.2126*toLin(c.r) + 0.7152*toLin(c.g) + 0.0722*toLin(c.b) : 0; };
+const contrast = (a,b) => { const A = lum(a), B = lum(b); return (Math.max(A,B)+0.05)/(Math.min(A,B)+0.05); };
+const cleanHex = h => { const c = String(h).trim().replace('#',''); const f = (c.length===3||c.length===4) ? c.split('').map(x=>x+x).join('') : c;
+  return /^[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(f) ? '#'+f.toUpperCase() : null; };
+
+/* ================= state ================= */
+const DENSITY = { compact:0.75, default:1, comfortable:1.25 };
+const RADIUS  = { sharp:0, soft:1, round:2 };
+const FONTS = {
+  'System UI': "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+  'Geometric sans': "'Avenir Next', Avenir, 'Nunito Sans', Corbel, 'URW Gothic', sans-serif",
+  'Humanist sans': "Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif",
+  'Transitional serif': "Charter, 'Bitstream Charter', 'Sitka Text', Cambria, Georgia, serif",
+  'Old-style serif': "'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, Georgia, serif",
+  'Slab serif': "Rockwell, 'Rockwell Nova', 'Roboto Slab', 'DejaVu Serif', 'Sitka Small', serif",
+  'Monospace': "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace",
+};
+const S = {
+  view:      store.get('view', 'foundations'),
+  chrome:    store.get('chrome', 'light'),
+  theme:     store.get('theme', 'light'),
+  density:   store.get('density', 'default'),
+  radius:    store.get('radius', 'soft'),
+  tab:       store.get('tab', 'colors'),
+  anchors:   store.get('anchors', {}),   // ramp -> hex
+  stopOv:    store.get('stopOv', {}),    // "naviblue.600" -> hex
+  semOv:     store.get('semOv', {}),     // "--es-primary-bg" -> {light,dark}
+  scaleOv:   store.get('scaleOv', {}),   // "--es-space-100" -> "9px"
+  typeface:  store.get('typeface', {}),  // text|heading -> stack
+  expand:    {},                          // per component: { axis: true }
+  fixed:     {},                          // per component: { axis: value }
+};
+const save = () => ['view','chrome','theme','density','radius','tab','anchors','stopOv','semOv','scaleOv','typeface']
+  .forEach(k => store.set(k, S[k]));
+
+/* ================= token resolution ================= */
+const lchCache = new Map();
+const rampOf = path => path.split('.')[0];
+function anchorInfo(ramp){
+  const r = T.ramps[ramp];
+  if (!r || !r.anchor) return null;
+  const orig = T.palette[`${ramp}.${r.anchor}`];
+  if (!orig) return null;
+  return { orig, lch: rgbToOklch(parseHex(orig)) };
+}
+/** A palette stop, after the ramp's anchor shift and any direct override. */
+function stopHex(path){
+  if (S.stopOv[path]) return S.stopOv[path];
+  const base = T.palette[path];
+  if (!base) return '#FF00FF';
+  const ramp = rampOf(path), a = S.anchors[ramp];
+  const info = anchorInfo(ramp);
+  if (!a || !info || a.toUpperCase() === info.orig.toUpperCase()) return base;
+  const c = parseHex(base); if (!c) return base;
+  let n = lchCache.get(a); if (!n){ n = rgbToOklch(parseHex(a)); lchCache.set(a, n); }
+  const d = info.lch, o = rgbToOklch(c);
+  // Map this stop's lightness onto the new anchor's, keeping its position above/below the anchor.
+  const L = o.L <= d.L
+    ? (d.L > 0 ? o.L * n.L / d.L : n.L)
+    : n.L + (o.L - d.L) * (1 - n.L) / Math.max(1e-6, 1 - d.L);
+  const C = o.C * (n.C / Math.max(d.C, 1e-4));
+  return oklchToHex(L, Math.min(C, 0.37), o.H + (n.H - d.H), c.ah);
+}
+/** A semantic var in one mode. */
+function varHex(name, mode){
+  const ov = S.semOv[name]; if (ov && ov[mode]) return ov[mode];
+  const ref = T.semantic[name]; if (!ref) return '#FF00FF';
+  const path = ref[mode] || ref.light;
+  return path ? stopHex(path) : '#FF00FF';
+}
+const scaleVal = name => S.scaleOv[name] ?? (T.scales[name] ? T.scales[name].value : '');
+const isTouched = () => Object.keys(S.anchors).length || Object.keys(S.stopOv).length ||
+  Object.keys(S.semOv).length || Object.keys(S.scaleOv).length || Object.keys(S.typeface).length;
+
+/** Write every live value into one stylesheet that sits after the generated one. */
+function applyTokens(){
+  const names = Object.keys(T.semantic);
+  const light = names.map(n => `${n}:${varHex(n,'light')}`).join(';');
+  const dark  = names.map(n => `${n}:${varHex(n,'dark')}`).join(';');
+  const scaled = [], plain = [];
+  for (const n of Object.keys(S.scaleOv)){
+    const meta = T.scales[n]; if (!meta) continue;
+    const v = S.scaleOv[n];
+    (meta.scale ? scaled : plain).push(`${n}:${meta.scale ? `calc(${v} * var(--es-${meta.scale === 'density' ? 'density' : 'radius-scale'}))` : v}`);
+  }
+  for (const [k, v] of Object.entries(S.typeface)) plain.push(`--es-font-${k}:${v}`);
+  $('#live').textContent =
+    `:root{${light}${plain.length ? ';' + plain.join(';') : ''}}` +
+    (scaled.length ? `:root,[data-es-scope]{${scaled.join(';')}}` : '') +
+    `:root[data-theme="dark"]{${dark}}` +
+    `@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){${dark}}}`;
+  const root = document.documentElement;
+  root.dataset.theme = S.theme;
+  root.dataset.chrome = S.chrome;
+  root.style.setProperty('--es-density', DENSITY[S.density]);
+  root.style.setProperty('--es-radius-scale', RADIUS[S.radius]);
+}
+
+/* ================= component rendering ================= */
+const fill = (tpl, v) => tpl.replace(/\{([\w-]+)\}/g, (m,k) => (k in v ? v[k] : m));
+function defaults(c){
+  if (!S.fixed[c.name]){
+    const f = {};
+    Object.keys(c.variants).forEach(a => { f[a] = (c.defaults && c.defaults[a]) || c.variants[a][0]; });
+    S.fixed[c.name] = f;
+    S.expand[c.name] = S.expand[c.name] || {};
+  }
+  return S.fixed[c.name];
+}
+const expandedAxes = c => Object.keys(c.variants).filter(a => S.expand[c.name] && S.expand[c.name][a]);
+function product(c, axes){
+  return axes.reduce((rows, a) => rows.flatMap(r => c.variants[a].map(v => ({ ...r, [a]: v }))), [{}]);
+}
+/** The variant grid: one row per value of the first expanded axis, cells = the rest crossed. */
+function stage(c){
+  const fx = defaults(c), ex = expandedAxes(c);
+  // The row heading already names the first expanded axis, so the caption only carries the rest.
+  const cell = (extra, caption) => {
+    const cap = Object.entries(caption).map(([k,v]) => `${k}=${v}`).join(' · ');
+    return `<figure class="cell">${fill(c.preview, { ...fx, ...extra })}${cap ? `<figcaption>${esc(cap)}</figcaption>` : ''}</figure>`;
   };
-  const fill = (tpl, values) => tpl.replace(/\{([\w-]+)\}/g, (m, k) => (k in values ? values[k] : m));
+  if (!ex.length) return `<div class="srow"><div class="cells">${cell({}, {})}</div></div>`;
+  const [head, ...rest] = ex;
+  return c.variants[head].map(v => {
+    const cells = product(c, rest).map(combo => cell({ [head]: v, ...combo }, combo)).join('');
+    return `<div class="srow"><b>${esc(head)} = ${esc(v)}</b><div class="cells">${cells}</div></div>`;
+  }).join('');
+}
+function propsUI(c){
+  const fx = defaults(c), ex = S.expand[c.name] || {};
+  const axes = Object.keys(c.variants);
+  if (!axes.length) return '<p class="note">No variants — this component has a single form.</p>';
+  const rows = axes.map(a => {
+    const vals = c.variants[a], on = !!ex[a];
+    const picker = vals.length <= 7
+      ? `<div class="seg">${vals.map(v => `<button type="button" data-fix="${esc(a)}" data-v="${esc(v)}" aria-pressed="${fx[a]===v}">${esc(v)}</button>`).join('')}</div>`
+      : `<select class="inp" data-fix="${esc(a)}">${vals.map(v => `<option${v===fx[a]?' selected':''}>${esc(v)}</option>`).join('')}</select>`;
+    return `<div class="prop"><label>${esc(a)} <span class="cnt">${vals.length}</span></label>
+      <button type="button" class="exp" data-exp="${esc(a)}" aria-pressed="${on}" title="Show every ${esc(a)}">⊞</button>
+      ${picker}</div>`;
+  }).join('');
+  const allOn = axes.every(a => ex[a]);
+  return `<div class="props-h">Props <button type="button" class="btn" data-expall="${allOn?'off':'on'}">${allOn ? 'Collapse all' : 'Expand all'}</button></div>${rows}`;
+}
+function componentCard(c){
+  const fx = defaults(c);
+  return `<section class="card" id="c-${c.name}">
+    <div class="card-h"><h2>${esc(c.name)}</h2><span class="lv" data-level="${c.level}">${c.level}</span>
+      <code>.${esc(c.class)}</code><code>${esc(c.category)}</code></div>
+    <p class="sum">${esc(c.summary)}</p>
+    <div class="chips">${(c.uses||[]).map(u => `<span class="chip use">uses ${esc(u)}</span>`).join('')}${(c.tags||[]).map(t => `<span class="chip">${esc(t)}</span>`).join('')}</div>
+    <div class="props" data-props>${propsUI(c)}</div>
+    <div class="stage" data-stage>${stage(c)}</div>
+    <details><summary>Markup</summary><pre data-markup>${esc(fill(c.preview, fx))}</pre></details>
+    ${c.slots && c.slots.length ? `<p class="a11y"><b>Slots.</b> ${esc(c.slots.join(' · '))}</p>` : ''}
+    <p class="a11y"><b>A11y.</b> ${esc(c.a11y||'')}</p>
+  </section>`;
+}
+function refreshComponent(name){
+  const c = byName[name], el = document.getElementById('c-' + name); if (!el) return;
+  el.querySelector('[data-props]').innerHTML = propsUI(c);
+  el.querySelector('[data-stage]').innerHTML = stage(c);
+  el.querySelector('[data-markup]').textContent = fill(c.preview, defaults(c));
+}
 
-  // ---- global look: theme x density x radius ----
-  const DENSITY = { compact: 0.75, default: 1, comfortable: 1.25 };
-  const RADIUS = { sharp: 0, soft: 1, round: 2 };
-  const global = {
-    theme: store.get('theme', 'auto'),
-    density: store.get('density', 'default'),
-    radius: store.get('radius', 'soft'),
-  };
-  function applyGlobal() {
-    const root = document.documentElement;
-    if (global.theme === 'auto') root.removeAttribute('data-theme'); else root.dataset.theme = global.theme;
-    root.style.setProperty('--es-density', DENSITY[global.density]);
-    root.style.setProperty('--es-radius-scale', RADIUS[global.radius]);
-  }
+/* personality compare: same markup, four looks */
+const QUADS = [['Sharp · compact',0,.75], ['Round · compact',2,.75], ['Sharp · comfortable',0,1.25], ['Round · comfortable',2,1.25]];
+function compareCard(c){
+  if (!c) return '';
+  const fx = defaults(c), ex = expandedAxes(c);
+  const combos = ex.length ? product(c, [ex[0]]).slice(0,3) : [{}];
+  const inner = combos.map(x => fill(c.preview, { ...fx, ...x })).join(' ');
+  return `<section class="card"><div class="card-h"><h2>Personality</h2><code>data-es-scope</code></div>
+    <p class="sum">Same markup four times. Each box sets only <code>--es-density</code> and <code>--es-radius-scale</code> — no component CSS changes.</p>
+    <div class="quads">${QUADS.map(([t,r,d]) =>
+      `<div class="quad" data-es-scope style="--es-radius-scale:${r};--es-density:${d}"><h3>${t}</h3><div class="cells">${inner}</div></div>`).join('')}</div></section>`;
+}
 
-  // ---- per-component state ----
-  const state = {};
-  function stateOf(c) {
-    if (state[c.name]) return state[c.name];
-    const axes = Object.keys(c.variants);
-    const defaults = {};
-    axes.forEach((a) => { defaults[a] = (c.defaults && c.defaults[a]) || c.variants[a][0]; });
-    return (state[c.name] = { rows: axes[0] || '', cols: axes[1] || '', fixed: defaults, defaults });
-  }
-  const valuesFor = (c, s, extra) => ({ ...s.fixed, ...extra });
-  const renderOne = (c, s, extra) => fill(c.preview, valuesFor(c, s, extra));
+/* ================= foundations canvas ================= */
+function foundations(){
+  const ramps = Object.keys(T.ramps).map(r => {
+    const stops = T.ramps[r].stops.filter(s => !/^d/.test(s));
+    return `<h3 style="margin-top:14px">${esc(T.ramps[r].label)} <code style="font:10px var(--c-mono);color:var(--c-ink3)">${esc(r)}</code></h3>
+      <div class="fgrid">${stops.map(s => { const hex = stopHex(`${r}.${s}`);
+        return `<button class="fsw" data-copy="${hex}"><i style="background:${hex}"></i><b>${esc(s)}</b><small>${hex.slice(0,7)}</small></button>`; }).join('')}</div>`;
+  }).join('');
 
-  function stage(c, s) {
-    const rowVals = s.rows ? c.variants[s.rows] : [null];
-    const colVals = s.cols ? c.variants[s.cols] : [null];
-    const captions = colVals.length <= 8;
-    return rowVals.map((r) => {
-      const cells = colVals.map((v) => {
-        const extra = {};
-        if (s.rows) extra[s.rows] = r;
-        if (s.cols) extra[s.cols] = v;
-        const label = [s.rows && `${s.rows}=${r}`, s.cols && `${s.cols}=${v}`].filter(Boolean).join(' · ');
-        return `<figure class="lab-cell" title="${esc(label)}">${renderOne(c, s, extra)}${captions && v ? `<figcaption>${esc(v)}</figcaption>` : ''}</figure>`;
-      }).join('');
-      return `<div class="lab-row">${s.rows ? `<div class="lab-rowlabel">${esc(s.rows)} = ${esc(r)}</div>` : ''}${cells}</div>`;
-    }).join('');
-  }
+  const typeRows = ['heading-size-xl','heading-size-lg','heading-size-md','heading-size-sm','heading-size-xs','text-size-xl','text-size-lg','text-size-md','text-size-sm','text-size-xs']
+    .map(k => { const n = '--es-' + k, v = scaleVal(n); if (!v) return '';
+      const head = k.startsWith('heading');
+      return `<div class="frow"><div style="font-family:var(--es-font-${head?'heading':'text'});font-size:${v};font-weight:${head?600:400};line-height:1.2;color:var(--es-text-primary)">The quick brown fox</div>
+        <div class="m"><b>${esc(n)}</b><br>${esc(v)}</div></div>`; }).join('');
 
-  function controls(c, s) {
-    const axes = Object.keys(c.variants);
-    const opt = (list, cur, none) => (none ? `<option value="">— none —</option>` : '') +
-      list.map((a) => `<option value="${esc(a)}"${a === cur ? ' selected' : ''}>${esc(a)}</option>`).join('');
-    let html = '';
-    if (axes.length) {
-      html += `<div class="lab-axis"><label>Rows</label><select class="lab-select" data-c="${c.name}" data-k="rows">${opt(axes, s.rows, true)}</select></div>`;
-      html += `<div class="lab-axis"><label>Columns</label><select class="lab-select" data-c="${c.name}" data-k="cols">${opt(axes, s.cols, true)}</select></div>`;
-    }
-    axes.filter((a) => a !== s.rows && a !== s.cols).forEach((a) => {
-      const vals = c.variants[a];
-      html += `<div class="lab-axis"><span>${esc(a)}</span>` + (vals.length <= 6
-        ? `<div class="lab-seg">${vals.map((v) => `<button type="button" aria-pressed="${s.fixed[a] === v}" data-c="${c.name}" data-fix="${esc(a)}" data-v="${esc(v)}">${esc(v)}</button>`).join('')}</div>`
-        : `<select class="lab-select" data-c="${c.name}" data-fix="${esc(a)}">${opt(vals, s.fixed[a], false)}</select>`) + `</div>`;
-    });
-    return html;
-  }
+  const spaceRows = Object.keys(T.scales).filter(n => /^--es-space-\d/.test(n)).map(n => {
+    const v = scaleVal(n);
+    return `<div class="fspace"><b>${esc(n.replace('--es-',''))}</b><span>${esc(v)}</span><i style="width:${v}"></i></div>`; }).join('');
 
-  function card(c) {
-    const s = stateOf(c);
-    const sample = renderOne(c, s, {});
-    return `<section class="lab-card" id="c-${c.name}" data-name="${c.name}">
-      <div class="lab-card__head"><h2>${esc(c.name)}</h2><span class="lab-level" data-level="${c.level}">${c.level}</span><code class="lab-class">.${esc(c.class)}</code></div>
-      <p class="lab-summary">${esc(c.summary)}</p>
-      <div class="lab-meta">${(c.uses || []).map((u) => `<span class="lab-chip lab-chip--uses">uses ${esc(u)}</span>`).join('')}${(c.tags || []).map((t) => `<span class="lab-chip">${esc(t)}</span>`).join('')}</div>
-      <div class="lab-controls" data-controls>${controls(c, s)}</div>
-      <div class="lab-stage" data-stage>${stage(c, s)}</div>
-      <details><summary>Markup (current defaults)</summary><pre data-markup>${esc(sample)}</pre></details>
-      <p class="lab-a11y"><strong>A11y.</strong> ${esc(c.a11y || '')}</p>
-    </section>`;
-  }
+  const radRows = Object.keys(T.scales).filter(n => /^--es-radius-/.test(n)).map(n => {
+    const v = scaleVal(n);
+    return `<div><i style="border-radius:${v === '9999px' ? '999px' : `calc(${v} * ${RADIUS[S.radius]})`}"></i><b>${esc(n.replace('--es-radius-',''))}</b><span>${esc(v)}</span></div>`; }).join('');
 
-  function refresh(name) {
-    const c = byName[name], s = stateOf(c);
-    const root = document.getElementById('c-' + name);
-    root.querySelector('[data-controls]').innerHTML = controls(c, s);
-    root.querySelector('[data-stage]').innerHTML = stage(c, s);
-    root.querySelector('[data-markup]').textContent = renderOne(c, s, {});
-  }
+  return `<section class="card"><div class="card-h"><h2>Colour</h2><code>${esc(T.theme.name)}</code></div>
+      <p class="sum">Palette ramps as they stand now. Edit an anchor in the Colour tab and every stop moves with it.</p>${ramps}</section>
+    <section class="card"><div class="card-h"><h2>Typography</h2></div><div>${typeRows}</div></section>
+    <section class="card"><div class="card-h"><h2>Spacing</h2><code>density ${DENSITY[S.density]}</code></div>
+      <p class="sum">Shown at the current density. The 8px base is <code>space-100</code>.</p>${spaceRows}</section>
+    <section class="card"><div class="card-h"><h2>Radius</h2><code>scale ${RADIUS[S.radius]}</code></div>
+      <p class="sum">Shown at the current radius personality.</p><div class="frad">${radRows}</div></section>`;
+}
 
-  // ---- personality compare: the same component under four looks at once ----
-  const QUADS = [
-    ['Sharp · compact', 0, 0.75], ['Round · compact', 2, 0.75],
-    ['Sharp · comfortable', 0, 1.25], ['Round · comfortable', 2, 1.25],
+/* ================= menu ================= */
+let query = '';
+function matches(c){
+  if (!query) return true;
+  return (c.name + ' ' + c.class + ' ' + c.category + ' ' + (c.tags||[]).join(' ') + ' ' + c.summary).toLowerCase().includes(query);
+}
+function menu(){
+  const hits = D.components.filter(matches);
+  // Open everything while the system is small; once it is large, open only the group you are in.
+  // A search always opens, or results would hide inside collapsed groups.
+  const openAll = D.components.length <= 30;
+  const cats = D.categories.map(cat => {
+    const list = hits.filter(c => c.category === cat.id);
+    if (!list.length) return '';
+    return `<details class="cat"${(openAll || query || list.some(c => S.view === 'c:' + c.name)) ? ' open' : ''}>
+      <summary>${esc(cat.label)}<em>${list.length}</em></summary>
+      <div class="navi">${list.map(c => `<a href="#" data-go="c:${c.name}"${S.view === 'c:'+c.name ? ' aria-current="page"' : ''}>${esc(c.name)}<span class="lv">${c.level[0].toUpperCase()}</span></a>`).join('')}</div>
+    </details>`;
+  }).join('');
+  const uncat = hits.filter(c => !D.categories.some(x => x.id === c.category));
+  return `<div class="navi">
+      <a href="#" data-go="foundations"${S.view==='foundations'?' aria-current="page"':''}>Foundations</a>
+      <a href="#" data-go="all"${S.view==='all'?' aria-current="page"':''}>All components<span class="lv">${D.components.length}</span></a>
+    </div>
+    <div class="menu-h">Components <b>${hits.length}</b></div>
+    ${cats || `<p class="menu-empty">${query ? 'Nothing matches.' : 'No components yet.'}</p>`}
+    ${uncat.length ? `<details class="cat" open><summary>Uncategorised<em>${uncat.length}</em></summary><div class="navi">${uncat.map(c => `<a href="#" data-go="c:${c.name}">${esc(c.name)}</a>`).join('')}</div></details>` : ''}
+    <div class="menu-h">Patterns <b>${D.patterns.length}</b></div>
+    ${D.patterns.length ? `<div class="navi">${D.patterns.map(p => `<a href="#" data-go="p:${p.name}">${esc(p.name)}</a>`).join('')}</div>`
+      : `<p class="menu-empty">None yet. A pattern is a composition of components — it lives in <code>patterns/</code> and appears here automatically.</p>`}`;
+}
+
+/* ================= token rail ================= */
+const TABS = [['colors','Colour'],['type','Type'],['space','Space'],['radius','Radius'],['contrast','Contrast']];
+function swatch(hex, attrs){ return `<span class="sw"><i style="background:${hex}"></i><input type="color" value="${hex.slice(0,7)}" ${attrs}></span>`; }
+
+function paneColors(){
+  const anchors = Object.keys(T.ramps).filter(r => T.ramps[r].anchor).map(r => {
+    const info = anchorInfo(r), cur = S.anchors[r] || info.orig;
+    const stops = T.ramps[r].stops.filter(s => !/^d/.test(s));
+    return `<div class="anch">
+      <div class="anch-h">${swatch(cur, `data-anchor="${r}"`)}
+        <span><b>${esc(T.ramps[r].label)}</b><small>${esc(r)}.${esc(T.ramps[r].anchor)}</small></span>
+        <span style="display:flex;gap:2px;align-items:center">
+          <input class="hex" value="${cur.slice(0,7)}" data-anchor-hex="${r}">
+          <button class="ico" data-reset-anchor="${r}" ${S.anchors[r] ? '' : 'disabled'} title="Reset">↺</button></span>
+      </div>
+      <div class="ramp">${stops.map(s => `<i style="background:${stopHex(`${r}.${s}`)}" title="${esc(r)}.${esc(s)}"></i>`).join('')}</div>
+    </div>`;
+  }).join('');
+
+  const q = (S.tokenQuery || '').toLowerCase();
+  const rows = Object.keys(T.semantic).filter(n => !q || n.toLowerCase().includes(q)).map(n => {
+    const l = varHex(n,'light'), d = varHex(n,'dark'), ov = !!S.semOv[n];
+    return `<div class="trow"><span class="nm">${esc(n.replace('--es-',''))}${ov ? ' <em>•</em>' : ''}</span>
+      <button class="ico" data-reset-sem="${n}" ${ov ? '' : 'disabled'}>↺</button>
+      <span class="pair">
+        <span class="one"><span class="th">L</span>${swatch(l, `data-sem="${n}" data-mode="light"`)}<input class="hex" value="${l.slice(0,7)}" data-sem-hex="${n}" data-mode="light"></span>
+        <span class="one"><span class="th">D</span>${swatch(d, `data-sem="${n}" data-mode="dark"`)}<input class="hex" value="${d.slice(0,7)}" data-sem-hex="${n}" data-mode="dark"></span>
+      </span></div>`;
+  }).join('');
+
+  return `<h3>Anchors</h3>
+    <p class="note">Change one colour and its whole ramp is regenerated in OKLCH — every stop keeps its relative lightness and chroma.</p>
+    <div class="grp">${anchors}</div>
+    <h3>Semantic tokens</h3>
+    <p class="note">Overriding one here breaks it away from its ramp. Prefer an anchor.</p>
+    <input class="inp" style="width:100%" placeholder="Filter tokens…" data-tokenq value="${esc(S.tokenQuery||'')}">
+    <div class="grp" style="gap:0">${rows || '<p class="note">No match.</p>'}</div>`;
+}
+
+function numCtl(name, label, min, max, step, unit, note){
+  const raw = String(scaleVal(name)), v = parseFloat(raw);
+  return `<div class="num"><label>${esc(label)}</label>
+    <span class="v"><input value="${Number.isFinite(v)?v:raw}" data-scale="${name}" data-unit="${unit}"><span>${unit}</span></span>
+    <input type="range" min="${min}" max="${max}" step="${step}" value="${Number.isFinite(v)?v:0}" data-scale-range="${name}" data-unit="${unit}">
+    ${note ? `<small>${esc(note)}</small>` : ''}</div>`;
+}
+function paneType(){
+  const fam = k => `<div class="grp"><h3>${k === 'text' ? 'Body / UI' : 'Headings'}</h3>
+    <select class="inp" data-font="${k}">${Object.entries(FONTS).map(([n,v]) =>
+      `<option value="${esc(v)}"${(S.typeface[k]||T.typeface[k])===v?' selected':''}>${esc(n)}</option>`).join('')}
+      ${Object.values(FONTS).includes(S.typeface[k]||T.typeface[k]) ? '' : `<option selected value="${esc(S.typeface[k]||T.typeface[k])}">Theme default</option>`}</select></div>`;
+  const sizes = Object.keys(T.scales).filter(n => /^--es-(text|heading)-size-/.test(n))
+    .map(n => numCtl(n, n.replace('--es-',''), 0.5, 5, 0.0625, 'rem', '')).join('');
+  return `${fam('text')}${fam('heading')}<h3>Scale</h3>
+    <p class="note">Sizes are in rem; 1rem = 16px. Type does not scale with density.</p><div class="grp">${sizes}</div>`;
+}
+function paneSpace(){
+  const steps = Object.keys(T.scales).filter(n => /^--es-space-\d/.test(n))
+    .map(n => numCtl(n, n.replace('--es-space-','space.'), 0, 160, 1, 'px', '')).join('');
+  return `<h3>Density</h3>
+    <p class="note">Multiplies every spacing step at runtime. The values below are the unscaled base.</p>
+    <div class="seg" data-seg="density">${Object.keys(DENSITY).map(k => `<button data-v="${k}" aria-pressed="${S.density===k}">${k}</button>`).join('')}</div>
+    <h3>Steps</h3><div class="grp">${steps}</div>`;
+}
+function paneRadius(){
+  const steps = Object.keys(T.scales).filter(n => /^--es-radius-/.test(n) && !n.endsWith('full'))
+    .map(n => numCtl(n, n.replace('--es-radius-',''), 0, 48, 1, 'px', '')).join('');
+  const borders = Object.keys(T.scales).filter(n => /^--es-border-width-/.test(n))
+    .map(n => numCtl(n, n.replace('--es-',''), 0, 8, 0.5, 'px', '')).join('');
+  return `<h3>Personality</h3>
+    <p class="note">Multiplies every radius step except <code>full</code>.</p>
+    <div class="seg" data-seg="radius">${Object.keys(RADIUS).map(k => `<button data-v="${k}" aria-pressed="${S.radius===k}">${k}</button>`).join('')}</div>
+    <h3>Steps</h3><div class="grp">${steps}</div>
+    <h3>Border width</h3><div class="grp">${borders}</div>`;
+}
+function paneContrast(){
+  const PAIRS = [
+    ['--es-text-primary','--es-base-bg',4.5], ['--es-text-primary','--es-base-surface',4.5],
+    ['--es-text-secondary','--es-base-surface',4.5], ['--es-text-tertiary','--es-base-surface',4.5],
+    ['--es-text-muted','--es-base-surface',4.5], ['--es-link','--es-base-surface',4.5],
+    ['--es-primary-text-inverted','--es-primary-bg',4.5], ['--es-secondary-text-inverted','--es-secondary-bg',4.5],
+    ['--es-success-text-inverted','--es-success-bg',4.5], ['--es-warning-text-inverted','--es-warning-bg',4.5],
+    ['--es-error-text-inverted','--es-error-bg',4.5],
+    ['--es-primary-text','--es-primary-soft',4.5], ['--es-success-text','--es-success-soft',4.5],
+    ['--es-warning-text','--es-warning-soft',4.5], ['--es-error-text','--es-error-soft',4.5],
+    ['--es-neutral-strong','--es-base-surface',3], ['--es-state-focus','--es-base-bg',3],
   ];
-  let compareName = store.get('compare', DATA.components.length ? DATA.components[DATA.components.length - 1].name : '');
-  if (!byName[compareName]) compareName = DATA.components[0] && DATA.components[0].name;
+  const mode = S.theme === 'dark' ? 'dark' : 'light';
+  const rows = PAIRS.map(([fg,bg,need]) => {
+    const f = varHex(fg,mode), b = varHex(bg,mode), r = contrast(f,b);
+    const cls = r >= need ? 'ok' : (r >= 3 ? 'lg' : 'bad');
+    const label = r >= need ? 'AA' : (r >= 3 ? 'large' : 'fail');
+    return `<tr><td>${esc(fg.replace('--es-',''))}<br>on ${esc(bg.replace('--es-',''))}</td>
+      <td><span class="pr" style="background:${b};color:${f}">Aa</span></td>
+      <td class="ratio">${r.toFixed(2)}</td><td><span class="tag ${cls}">${label}</span></td></tr>`;
+  }).join('');
+  return `<h3>Contrast — ${mode}</h3>
+    <p class="note">WCAG 2.1: 4.5:1 for body text, 3:1 for 24px+ text, borders, focus rings and icons. Switch the theme in the top bar to check the other mode.</p>
+    <table class="ctab"><thead><tr><th>Pair</th><th>Sample</th><th>Ratio</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+const PANES = { colors:paneColors, type:paneType, space:paneSpace, radius:paneRadius, contrast:paneContrast };
+function rail(){
+  return `<div class="rail-tabs" role="tablist">${TABS.map(([id,l]) =>
+    `<button role="tab" data-tab="${id}" aria-selected="${S.tab===id}">${l}</button>`).join('')}</div>
+    <div class="pane" data-pane>${PANES[S.tab]()}</div>`;
+}
+const refreshRail = () => { $('[data-pane]').innerHTML = PANES[S.tab](); };
 
-  function compare() {
-    const c = byName[compareName]; if (!c) return '';
-    const s = stateOf(c);
-    const first = s.rows;
-    const rowVals = first ? c.variants[first].slice(0, 4) : [null];
-    const inner = rowVals.map((r) => `<div class="lab-row">${renderOne(c, s, first ? { [first]: r } : {})}</div>`).join('');
-    return `<section class="lab-card" id="compare">
-      <div class="lab-card__head"><h2>Compare personalities</h2><code class="lab-class">data-es-scope</code></div>
-      <p class="lab-summary">Same component, same markup, four looks. Each box sets only <code>--es-density</code> and <code>--es-radius-scale</code>.</p>
-      <div class="lab-controls"><div class="lab-axis"><label for="cmp">Component</label>
-        <select class="lab-select" id="cmp">${DATA.components.map((x) => `<option value="${x.name}"${x.name === compareName ? ' selected' : ''}>${x.name}</option>`).join('')}</select></div></div>
-      <div class="lab-compare">${QUADS.map(([t, r, d]) =>
-        `<div class="lab-quad" data-es-scope style="--es-radius-scale:${r};--es-density:${d}"><h3>${t}</h3>${inner}</div>`).join('')}</div>
-    </section>`;
-  }
-
-  // ---- shell ----
-  function seg(id, label, options, current) {
-    return `<div class="lab-ctl"><span>${label}</span><div class="lab-seg" data-seg="${id}">${options.map((o) =>
-      `<button type="button" data-v="${o}" aria-pressed="${o === current}">${o}</button>`).join('')}</div></div>`;
-  }
-
-  let query = '';
-  function build() {
-    const list = DATA.components.filter((c) => !query ||
-      (c.name + ' ' + (c.tags || []).join(' ') + ' ' + c.summary).toLowerCase().includes(query));
-    document.getElementById('app').innerHTML = `
-      <header class="lab-bar"><div class="lab-bar__inner">
-        <div class="lab-brand">Enspire Lab <small>${DATA.components.length} components</small></div>
-        <input class="lab-input" id="q" type="search" placeholder="Search name, tag…" value="${esc(query)}" aria-label="Search components">
-        ${seg('theme', 'Theme', ['auto', 'light', 'dark'], global.theme)}
-        ${seg('density', 'Density', Object.keys(DENSITY), global.density)}
-        ${seg('radius', 'Radius', Object.keys(RADIUS), global.radius)}
-      </div></header>
-      <main class="lab-main">
-        <nav class="lab-nav" aria-label="Components">${list.map((c) => `<a href="#c-${c.name}">${c.name}</a>`).join('')}<a href="#compare">compare</a></nav>
-        ${list.length ? list.map(card).join('') : '<p class="lab-empty">No component matches.</p>'}
-        ${compare()}
-      </main>`;
-  }
-
-  // ---- events (delegated, so re-rendering a card never loses them) ----
-  document.addEventListener('click', (e) => {
-    const b = e.target.closest('button'); if (!b) return;
-    const seg = b.closest('[data-seg]');
-    if (seg) {
-      global[seg.dataset.seg] = b.dataset.v; store.set(seg.dataset.seg, b.dataset.v); applyGlobal();
-      seg.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b));
-      return;
+/* ================= export ================= */
+function themeJSON(){
+  const out = JSON.parse(JSON.stringify(D.themeFile));
+  for (const [ramp, group] of Object.entries(out.palette || {})){
+    if (ramp.startsWith('$')) continue;
+    for (const stop of Object.keys(group)){
+      if (stop.startsWith('$')) continue;
+      const hex = stopHex(`${ramp}.${stop}`);
+      if (hex !== T.palette[`${ramp}.${stop}`]) group[stop].$value = hex;
     }
-    if (b.dataset.fix) { stateOf(byName[b.dataset.c]).fixed[b.dataset.fix] = b.dataset.v; refresh(b.dataset.c); }
-  });
-  document.addEventListener('change', (e) => {
-    const t = e.target;
-    if (t.id === 'cmp') { compareName = t.value; store.set('compare', t.value); document.getElementById('compare').outerHTML = compare(); return; }
-    if (!t.dataset.c) return;
-    const s = stateOf(byName[t.dataset.c]);
-    if (t.dataset.k) s[t.dataset.k] = t.value; else if (t.dataset.fix) s.fixed[t.dataset.fix] = t.value;
-    refresh(t.dataset.c);
-  });
-  document.addEventListener('input', (e) => {
-    if (e.target.id !== 'q') return;
-    query = e.target.value.trim().toLowerCase();
-    const pos = e.target.selectionStart; build(); const q = document.getElementById('q'); q.focus(); q.setSelectionRange(pos, pos);
-  });
+    if (S.anchors[ramp]) group.$anchor = T.ramps[ramp].anchor; // anchor stop itself is already written above
+  }
+  for (const [k,v] of Object.entries(S.typeface)) if (out.typeface && out.typeface[k]) out.typeface[k].$value = v;
+  out.personality.density.$value = DENSITY[S.density];
+  out.personality.radiusScale.$value = RADIUS[S.radius];
+  out.$name = (out.$name || 'Enspire') + (isTouched() ? ' (edited)' : '');
+  return JSON.stringify(out, null, 2) + '\n';
+}
+function overridesCSS(){
+  const names = Object.keys(T.semantic);
+  const line = m => names.map(n => `  ${n}: ${varHex(n,m)};`).join('\n');
+  const extra = Object.entries(S.scaleOv).map(([n,v]) => `  ${n}: ${v};`).join('\n');
+  return `/* Enspire — live values from the Lab. Paste into a project to override the built tokens,\n   or save the theme JSON into tokens/themes/ and rebuild (preferred). */\n:root {\n  --es-density: ${DENSITY[S.density]};\n  --es-radius-scale: ${RADIUS[S.radius]};\n${extra ? extra + '\n' : ''}${line('light')}\n}\n\n:root[data-theme="dark"] {\n${line('dark')}\n}\n`;
+}
+let exportTab = 'json';
+function exportDialog(){
+  const body = exportTab === 'json' ? themeJSON() : overridesCSS();
+  return `<div class="back" data-back><div class="dlg" role="dialog" aria-modal="true" aria-label="Export">
+    <header><h2>Export</h2><button class="btn" data-close>Close</button></header>
+    <div class="tabs">
+      <button class="btn${exportTab==='json'?' solid':''}" data-xtab="json">Theme JSON</button>
+      <button class="btn${exportTab==='css'?' solid':''}" data-xtab="css">CSS overrides</button></div>
+    <p class="note">${exportTab === 'json'
+      ? 'Save as <code>tokens/themes/&lt;project&gt;.json</code>, then <code>npm run build -- &lt;project&gt;</code>. This is the supported route: the token layers stay intact.'
+      : 'A flat dump of every resolved value. Useful to drop into one project in a hurry, but it bypasses the palette → semantic layering, so prefer the theme JSON.'}</p>
+    <pre data-xbody>${esc(body)}</pre>
+    <footer><span class="note" style="margin-right:auto;padding:0">${isTouched() ? 'Includes your edits.' : 'No edits yet — this is the theme as built.'}</span>
+      <button class="btn" data-copyx>Copy</button><button class="btn solid" data-dl>Download</button></footer>
+  </div></div>`;
+}
+function toast(msg){
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 1800);
+}
+function download(name, text){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type:'text/plain' }));
+  a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
 
-  applyGlobal();
-  build();
+/* ================= shell ================= */
+function canvas(){
+  if (S.view === 'foundations') return foundations();
+  if (S.view === 'all'){
+    const list = D.components.filter(matches);
+    return list.length ? list.map(componentCard).join('') : '<section class="card"><p class="sum">Nothing matches that search.</p></section>';
+  }
+  if (S.view.startsWith('c:')){
+    const c = byName[S.view.slice(2)];
+    if (!c) return '<section class="card"><p class="sum">Gone. Pick another from the menu.</p></section>';
+    return componentCard(c) + compareCard(c);
+  }
+  return '<section class="card"><p class="sum">Patterns land here once <code>patterns/</code> has something in it.</p></section>';
+}
+function render(){
+  $('#side').innerHTML = menu();
+  $('#canvas').innerHTML = canvas();
+  $('#rail').innerHTML = rail();
+  $('#seg-theme').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === S.theme));
+  $('#seg-chrome').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === S.chrome));
+}
+function shell(){
+  document.body.innerHTML = `<div class="app">
+    <div class="bar">
+      <button class="btn only-narrow" data-toggle="side" aria-label="Menu">☰</button>
+      <div class="brand">Enspire Lab <span>${D.components.length} components</span></div>
+      <input class="inp" id="q" type="search" placeholder="Search…" aria-label="Search components" style="width:170px">
+      <div class="ctl"><span>Theme</span><div class="seg" id="seg-theme" data-seg="theme">
+        ${['light','dark'].map(v => `<button data-v="${v}">${v}</button>`).join('')}</div></div>
+      <div class="ctl"><span>Density</span><div class="seg" data-seg="density">
+        ${Object.keys(DENSITY).map(v => `<button data-v="${v}" aria-pressed="${S.density===v}">${v}</button>`).join('')}</div></div>
+      <div class="ctl"><span>Radius</span><div class="seg" data-seg="radius">
+        ${Object.keys(RADIUS).map(v => `<button data-v="${v}" aria-pressed="${S.radius===v}">${v}</button>`).join('')}</div></div>
+      <div class="ctl"><span class="sr">Chrome</span><div class="seg" id="seg-chrome" data-seg="chrome">
+        ${['light','dark'].map(v => `<button data-v="${v}" title="Lab chrome ${v}">${v==='light'?'☀':'☾'}</button>`).join('')}</div></div>
+      <button class="btn" data-export>Export</button>
+      <button class="btn only-narrow" data-toggle="rail" aria-label="Tokens">⚙</button>
+    </div>
+    <div class="split"><aside class="side" id="side"></aside><main class="canvas" id="canvas"></main><aside class="rail" id="rail"></aside></div>
+  </div><div id="dlg"></div>`;
+}
+
+/* ================= events ================= */
+document.addEventListener('click', e => {
+  const t = e.target, btn = t.closest('button'), link = t.closest('a[data-go]');
+
+  if (link){ e.preventDefault(); S.view = link.dataset.go; save();
+    if (innerWidth <= 860) $('#side').classList.remove('open');
+    render(); $('#canvas').scrollTop = 0; return; }
+  if (!btn) return;
+
+  if (btn.dataset.toggle){ $('#' + btn.dataset.toggle).classList.toggle('open'); return; }
+
+  const seg = btn.closest('[data-seg]');
+  if (seg){
+    const k = seg.dataset.seg; S[k] = btn.dataset.v; save(); applyTokens();
+    seg.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === btn));
+    document.querySelectorAll(`[data-seg="${k}"]`).forEach(g => g !== seg &&
+      g.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === S[k])));
+    if (k === 'theme' && S.tab === 'contrast') refreshRail();
+    if ((k === 'density' || k === 'radius') && S.view === 'foundations') $('#canvas').innerHTML = foundations();
+    return;
+  }
+  if (btn.dataset.tab){ S.tab = btn.dataset.tab; save();
+    $('.rail-tabs').querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b === btn)); refreshRail(); return; }
+
+  // component props
+  const card = btn.closest('.card[id^="c-"]');
+  if (card){
+    const name = card.id.slice(2);
+    if (btn.dataset.exp){ const ex = S.expand[name] = S.expand[name] || {}; ex[btn.dataset.exp] = !ex[btn.dataset.exp]; refreshComponent(name); return; }
+    if (btn.dataset.expall){ const on = btn.dataset.expall === 'on', ex = S.expand[name] = {};
+      if (on) Object.keys(byName[name].variants).forEach(a => ex[a] = true); refreshComponent(name); return; }
+    if (btn.dataset.fix){ S.fixed[name][btn.dataset.fix] = btn.dataset.v; refreshComponent(name); return; }
+  }
+
+  // token rail
+  if (btn.dataset.resetAnchor){ delete S.anchors[btn.dataset.resetAnchor]; save(); applyTokens(); refreshRail(); if (S.view==='foundations') $('#canvas').innerHTML = foundations(); return; }
+  if (btn.dataset.resetSem){ delete S.semOv[btn.dataset.resetSem]; save(); applyTokens(); refreshRail(); return; }
+  if (btn.dataset.copy){ navigator.clipboard?.writeText(btn.dataset.copy); toast(btn.dataset.copy + ' copied'); return; }
+
+  // export dialog
+  if (btn.dataset.export !== undefined){ $('#dlg').innerHTML = exportDialog(); return; }
+  if (btn.dataset.close !== undefined){ $('#dlg').innerHTML = ''; return; }
+  if (btn.dataset.xtab){ exportTab = btn.dataset.xtab; $('#dlg').innerHTML = exportDialog(); return; }
+  if (btn.dataset.copyx !== undefined){ navigator.clipboard?.writeText($('[data-xbody]').textContent); toast('Copied'); return; }
+  if (btn.dataset.dl !== undefined){
+    download(exportTab === 'json' ? 'enspire-theme.json' : 'enspire-overrides.css', $('[data-xbody]').textContent);
+    return; }
+});
+document.addEventListener('mousedown', e => { if (e.target.dataset.back !== undefined) $('#dlg').innerHTML = ''; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') $('#dlg').innerHTML = ''; });
+
+function liveColor(el, commit){
+  const v = cleanHex(el.value); if (!v) return;
+  if (el.dataset.anchor || el.dataset.anchorHex){
+    S.anchors[el.dataset.anchor || el.dataset.anchorHex] = v;
+  } else if (el.dataset.sem || el.dataset.semHex){
+    const n = el.dataset.sem || el.dataset.semHex;
+    S.semOv[n] = Object.assign({ light:varHex(n,'light'), dark:varHex(n,'dark') }, { [el.dataset.mode]: v });
+  } else return;
+  applyTokens();
+  if (commit){ save(); refreshRail(); if (S.view === 'foundations') $('#canvas').innerHTML = foundations(); }
+}
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.id === 'q'){ query = el.value.trim().toLowerCase(); const p = el.selectionStart;
+    render(); const q = $('#q'); q.value = el.value; q.focus(); q.setSelectionRange(p,p); return; }
+  if (el.dataset.tokenq !== undefined){ S.tokenQuery = el.value; const p = el.selectionStart;
+    refreshRail(); const n = $('[data-tokenq]'); n.focus(); n.setSelectionRange(p,p); return; }
+  if (el.type === 'color' || el.dataset.semHex || el.dataset.anchorHex){ liveColor(el, false); return; }
+  if (el.dataset.scaleRange){ S.scaleOv[el.dataset.scaleRange] = el.value + el.dataset.unit;
+    const box = el.parentElement.querySelector('[data-scale]'); if (box) box.value = el.value;
+    applyTokens(); if (S.view === 'foundations') $('#canvas').innerHTML = foundations(); return; }
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.type === 'color' || el.dataset.semHex || el.dataset.anchorHex){ liveColor(el, true); return; }
+  if (el.dataset.font){ S.typeface[el.dataset.font] = el.value; save(); applyTokens(); return; }
+  if (el.dataset.scale){ const v = parseFloat(el.value);
+    if (Number.isFinite(v)){ S.scaleOv[el.dataset.scale] = v + el.dataset.unit; save(); applyTokens();
+      if (S.view === 'foundations') $('#canvas').innerHTML = foundations(); } return; }
+  if (el.dataset.scaleRange){ save(); return; }
+  const card = el.closest('.card[id^="c-"]');
+  if (card && el.dataset.fix){ S.fixed[card.id.slice(2)][el.dataset.fix] = el.value; refreshComponent(card.id.slice(2)); }
+});
+
+shell(); applyTokens(); render();
 })();
 
 </script>

@@ -1,6 +1,7 @@
 {
   "name": "icon",
   "class": "es-icon",
+  "category": "media",
   "summary": "A bare Lucide glyph drawn as a CSS mask. Takes currentColor. No container.",
   "tags": [
     "icon",
