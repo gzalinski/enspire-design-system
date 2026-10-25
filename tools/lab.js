@@ -52,7 +52,6 @@ ${order.map((n) => cssOf(items.get(n))).join('\n')}
 ${patterns.map(cssOf).join('\n')}
 ${read('lab.css')}
 </style>
-<style id="live"></style>
 </head>
 <body>
 <script>window.LAB = ${json};</script>

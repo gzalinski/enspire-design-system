@@ -140,7 +140,7 @@ function applyTokens(){
     (meta.scale ? scaled : plain).push(`${n}:${meta.scale ? `calc(${v} * var(--es-${meta.scale === 'density' ? 'density' : 'radius-scale'}))` : v}`);
   }
   for (const [k, v] of Object.entries(S.typeface)) plain.push(`--es-font-${k}:${v}`);
-  $('#live').textContent =
+  liveEl.textContent =
     `:root{${light}${plain.length ? ';' + plain.join(';') : ''}}` +
     (scaled.length ? `:root,[data-es-scope]{${scaled.join(';')}}` : '') +
     `:root[data-theme="dark"]{${dark}}` +
@@ -493,8 +493,18 @@ function render(){
   $('#seg-theme').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === S.theme));
   $('#seg-chrome').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === S.chrome));
 }
+/* Publishing wraps this page in a skeleton that moves its <title> and <style> blocks OUT of <head>
+   and into <body>. So the Lab must never assign to document.body.innerHTML — published, that deletes
+   its own stylesheets — and its live stylesheet is appended last in <body>, after the built tokens,
+   which is what makes an edit win the cascade in both contexts. */
+const rootEl = document.createElement('div');
+const liveEl = document.createElement("style");
+liveEl.id = "es-live";
+document.body.appendChild(rootEl);
+document.body.appendChild(liveEl);
+
 function shell(){
-  document.body.innerHTML = `<div class="app">
+  rootEl.innerHTML = `<div class="app">
     <div class="bar">
       <button class="btn only-narrow" data-toggle="side" aria-label="Menu">☰</button>
       <div class="brand">Enspire Lab <span>${D.components.length} components</span></div>
